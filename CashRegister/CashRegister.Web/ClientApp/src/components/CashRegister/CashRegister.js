@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./CashRegister.css";
+import { SortedSearch } from "../SortedSearch";
 
 export class CashRegister extends Component {
   static displayName = CashRegister.name;
@@ -55,27 +56,7 @@ export class CashRegister extends Component {
     document.removeEventListener("keydown", this.handleKeyDown);
   }
 
-  handleInput = e => {
-    let { searchbarInput } = this.state;
-    const { productsArray } = this.state;
-
-    searchbarInput = e.target.value;
-    let products = productsArray.filter(product => {
-      if (product.amount !== 0) {
-        const lowerCaseProduct = product.type.toLowerCase();
-        const filter = searchbarInput.toLowerCase();
-        return lowerCaseProduct.includes(filter);
-      } else return false;
-    });
-
-    if (searchbarInput !== "") {
-      this.setState({ productListVisibility: { display: "block" } });
-    } else this.setState({ productListVisibility: { display: "none" } });
-
-    this.setState({ searchbarInput, productsMatchingSearch: products });
-  };
-
-  handleProductClick = product => {
+  onProductClick = product => {
     const { productToSave } = this.state;
     productToSave.product = product;
 
@@ -133,45 +114,33 @@ export class CashRegister extends Component {
   render() {
     const {
       isRegisterOpened,
-      productsMatchingSearch,
       searchbarInput,
       productListVisibility,
       productAmountVisibility,
       isInputDisabled,
       productToSave,
       boughtProducts,
-      totalPrice
+      totalPrice,
+      productsArray
     } = this.state;
 
-    console.log("productsArray", this.state.productsArray);
-    console.log("boughtProducts", this.state.boughtProducts);
+    // console.log("productsArray", this.state.productsArray);
+    // console.log("boughtProducts", this.state.boughtProducts);
 
-    if (!isRegisterOpened) return null;
+    if (!isRegisterOpened) return <p>Press ENTER to open the register...</p>;
 
     return (
       <div className="register-wrapper">
         <div>
           <h1>Product list</h1>
 
-          <input
-            className="item-search"
-            value={searchbarInput}
-            placeholder="Search products..."
-            onChange={this.handleInput}
+          <SortedSearch
+            productsArray={productsArray}
+            handleProductClick={this.onProductClick}
             disabled={isInputDisabled}
+            searchbarInput={searchbarInput}
+            productListVisibility={productListVisibility}
           />
-
-          <ul className="product-list" style={productListVisibility}>
-            {productsMatchingSearch.map((product, index) => (
-              <li
-                className="product-list-item"
-                key={index}
-                onClick={() => this.handleProductClick(product)}
-              >
-                {product.type} - <i> in stock ({product.amount}</i>)
-              </li>
-            ))}
-          </ul>
 
           <div className="amount-modal" style={productAmountVisibility}>
             <p className="amount-info">

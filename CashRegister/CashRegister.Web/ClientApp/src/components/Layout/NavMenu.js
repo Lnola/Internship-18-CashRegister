@@ -19,7 +19,8 @@ export class NavMenu extends Component {
 
     this.toggleNavbar = this.toggleNavbar.bind(this);
     this.state = {
-      collapsed: true
+      collapsed: true,
+      navText: "Cash Register"
     };
   }
 
@@ -29,6 +30,10 @@ export class NavMenu extends Component {
     });
   }
 
+  handleNavTextChange = newText => {
+    this.setState({ navText: newText });
+  };
+
   render() {
     return (
       <header>
@@ -37,8 +42,12 @@ export class NavMenu extends Component {
           light
         >
           <Container>
-            <NavbarBrand tag={Link} to="/">
-              CashRegister.Web
+            <NavbarBrand
+              onClick={() => this.handleNavTextChange("Cash Register")}
+              tag={Link}
+              to="/"
+            >
+              {this.state.navText}
             </NavbarBrand>
             <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
             <Collapse
@@ -48,8 +57,23 @@ export class NavMenu extends Component {
             >
               <ul className="navbar-nav flex-grow">
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/">
+                  <NavLink
+                    onClick={() => this.handleNavTextChange("Cash Register")}
+                    tag={Link}
+                    className="text-dark"
+                    to="/"
+                  >
                     Cash register
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    onClick={() => this.handleNavTextChange("Store Inventory")}
+                    tag={Link}
+                    className="text-dark"
+                    to="/inventory"
+                  >
+                    Inventory
                   </NavLink>
                 </NavItem>
               </ul>
