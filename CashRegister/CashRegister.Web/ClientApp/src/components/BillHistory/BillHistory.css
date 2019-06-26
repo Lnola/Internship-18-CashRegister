@@ -1,0 +1,33 @@
+.bills-container {
+  width: 218px;
+}
+
+.bills-container li:hover {
+  background-color: whitesmoke;
+}
+
+.bill-search {
+  width: 218px;
+}
+
+.history-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bill {
+  width: auto;
+}
+
+.products-list {
+  display: flex;
+  justify-content: space-between;
+}
+
+.products-list ul {
+  text-align: end;
+}
+
+.t-a-start {
+  text-align: start !important;
+}

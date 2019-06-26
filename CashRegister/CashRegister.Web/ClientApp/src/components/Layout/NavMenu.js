@@ -80,10 +80,10 @@ export class NavMenu extends Component {
 
                 <NavItem>
                   <NavLink
-                    onClick={() => this.handleNavTextChange("Store Inventory")}
+                    onClick={() => this.handleNavTextChange("Bill History")}
                     tag={Link}
                     className="text-dark"
-                    to="/inventory"
+                    to="/history"
                   >
                     History
                   </NavLink>
