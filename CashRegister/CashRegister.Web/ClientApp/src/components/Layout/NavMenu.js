@@ -66,6 +66,7 @@ export class NavMenu extends Component {
                     Cash register
                   </NavLink>
                 </NavItem>
+
                 <NavItem>
                   <NavLink
                     onClick={() => this.handleNavTextChange("Store Inventory")}
@@ -74,6 +75,17 @@ export class NavMenu extends Component {
                     to="/inventory"
                   >
                     Inventory
+                  </NavLink>
+                </NavItem>
+
+                <NavItem>
+                  <NavLink
+                    onClick={() => this.handleNavTextChange("Store Inventory")}
+                    tag={Link}
+                    className="text-dark"
+                    to="/inventory"
+                  >
+                    History
                   </NavLink>
                 </NavItem>
               </ul>

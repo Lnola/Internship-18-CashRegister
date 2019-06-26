@@ -10,14 +10,45 @@ export class AddProduct extends Component {
     return (
       <div>
         <h1>Add product</h1>
-        <form>
+
+        <form className="add-product-wrapper">
           <input type="text" placeholder="Product name..." />
           <input type="text" placeholder="Barcode..." />
-          <input type="number" placeholder="Price in HRK..." />
-          <input type="radio" name="tax" value="VAT" checked /> VAT
-          <input type="radio" name="tax" value="ExciseDuty" checked /> Excise
-          Duty
-          <input type="number" placeholder="Amount..." />
+          <div className="radio-wrapper">
+            <div>
+              <input
+                className="radio-input"
+                type="radio"
+                name="tax"
+                value="VAT"
+                checked
+              />
+              VAT
+            </div>
+            <div>
+              <input
+                className="radio-input"
+                type="radio"
+                name="tax"
+                value="ExciseDuty"
+                checked
+              />
+              Excise Duty
+            </div>
+            <input
+              className="number-input"
+              type="number"
+              placeholder="Amount..."
+            />
+          </div>
+          <div>
+            <input
+              className="number-input"
+              type="number"
+              placeholder="HRK..."
+            />
+            <button className="save-button">Save product</button>
+          </div>
         </form>
       </div>
     );

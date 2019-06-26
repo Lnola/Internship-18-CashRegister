@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { AddProduct } from "./AddProduct";
 import { EditProduct } from "./EditProduct";
+import "./ProductInventory.css";
 // import "./CashRegister.css";
 
 export class ProductInventory extends Component {
@@ -21,7 +22,9 @@ export class ProductInventory extends Component {
       ],
       searchbarInput: "",
       productListVisibility: { display: "none" },
+      choiceButtonsVisibility: { display: "none" },
       productToSave: { product: {}, amount: "" },
+      isInputDisabled: false,
       isAddOpen: false,
       isEditOpen: false
     };
@@ -64,7 +67,9 @@ export class ProductInventory extends Component {
 
     this.setState({
       productListVisibility: { display: "none" },
+      choiceButtonsVisibility: { display: "block" },
       searchbarInput: product.type,
+      isInputDisabled: true,
       productToSave
     });
   };
@@ -75,7 +80,10 @@ export class ProductInventory extends Component {
       productListVisibility,
       productsArray,
       isAddOpen,
-      isEditOpen
+      isEditOpen,
+      productToSave,
+      isInputDisabled,
+      choiceButtonsVisibility
     } = this.state;
 
     if (!isAddOpen && !isEditOpen)
@@ -95,6 +103,9 @@ export class ProductInventory extends Component {
           onProductClick={this.onProductClick}
           searchbarInput={searchbarInput}
           productListVisibility={productListVisibility}
+          productToEdit={productToSave.product}
+          isInputDisabled={isInputDisabled}
+          choiceButtonsVisibility={choiceButtonsVisibility}
         />
       );
   }
