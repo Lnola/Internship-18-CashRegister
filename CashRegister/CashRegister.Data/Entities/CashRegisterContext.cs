@@ -31,6 +31,18 @@ namespace CashRegister.Data.Entities
                 .WithMany(r => r.CashierRegisters)
                 .HasForeignKey(cr => cr.RegisterId);
 
+            modelBuilder.Entity<BillProduct>()
+                .HasKey(bp => new {bp.BillId, bp.ProductId});
+            modelBuilder.Entity<BillProduct>()
+                .HasOne(bp => bp.Bill)
+                .WithMany(b => b.BillProducts)
+                .HasForeignKey(bp => bp.BillId);
+            modelBuilder.Entity<BillProduct>()
+                .HasOne(bp => bp.Product)
+                .WithMany(p => p.BillProducts)
+                .HasForeignKey(bp => bp.BillId);
+
+
         }
     }
 }

@@ -8,11 +8,13 @@ namespace CashRegister.Data.Entities.Models
     public class Bill
     {
         public int Id { get; set; }
-        public Guid Guid = Guid.NewGuid();
+        public Guid Guid { get; set; }
         public DateTime IssueDate { get; set; }
         public double TotalPriceWithoutTax { get; set; }
+        public double ExciseDutyAmount { get; set; }
+        public double ValueAddedTaxAmount { get; set; }
         public double TotalPriceWithTax { get; set; }
         public CashierRegister CashierRegister { get; set; }
-        public ICollection<Product> Products { get; set; }
+        public ICollection<BillProduct> BillProducts { get; set; }
     }
 }

@@ -11,9 +11,8 @@ namespace CashRegister.Data.Entities.Models
         public string Name { get; set; }
         public string Barcode { get; set; }
         public double Price { get; set; }
-        public int ValueAddedTax { get; set; }
-        public int ExciseDuty { get; set; }
+        public int Tax { get; set; } 
         public int Amount { get; set; }
-        public Bill Bill { get; set; }
+        public ICollection<BillProduct> BillProducts { get; set; }
     }
 }

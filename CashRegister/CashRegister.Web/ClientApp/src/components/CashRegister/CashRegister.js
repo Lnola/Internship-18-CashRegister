@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "./CashRegister.css";
 import { SortedSearch } from "../SortedSearch";
+import axios from "axios";
+import { BoughtItems } from "./BoughtItems";
 
 export class CashRegister extends Component {
   static displayName = CashRegister.name;
@@ -8,16 +10,7 @@ export class CashRegister extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      productsArray: [
-        { type: "apple", amount: 1, id: 0, price: 200 },
-        { type: "apples", amount: 1, id: 1, price: 200 },
-        { type: "applees", amount: 1, id: 2, price: 200 },
-        { type: "appleees", amount: 1, id: 3, price: 200 },
-        { type: "appleeees", amount: 1, id: 4, price: 200 },
-        { type: "orange", amount: 50, id: 5, price: 200 },
-        { type: "banana", amount: 200, id: 6, price: 200 },
-        { type: "lemon", amount: 20, id: 7, price: 200 }
-      ],
+      productsArray: [],
       productsMatchingSearch: [],
       isRegisterOpened: false,
       searchbarInput: "",
@@ -26,7 +19,8 @@ export class CashRegister extends Component {
       isInputDisabled: false,
       boughtProducts: [],
       productToSave: { product: {}, amount: "" },
-      totalPrice: 0
+      totalPrice: 0,
+      loading: true
     };
   }
 
@@ -49,6 +43,10 @@ export class CashRegister extends Component {
   };
 
   componentDidMount() {
+    axios.get("/api/products/all").then(response => {
+      this.setState({ productsArray: response.data, loading: false });
+    });
+
     document.addEventListener("keydown", this.handleKeyDown);
   }
 
@@ -63,7 +61,7 @@ export class CashRegister extends Component {
     this.setState({
       productListVisibility: { display: "none" },
       productAmountVisibility: { display: "block" },
-      searchbarInput: product.type,
+      searchbarInput: product.name,
       isInputDisabled: true,
       productToSave
     });
@@ -84,18 +82,28 @@ export class CashRegister extends Component {
   handleProductAdd = () => {
     const { productToSave } = this.state;
 
-    if (productToSave.amount === 0 || productToSave.amount === "")
+    if (
+      productToSave.amount === 0 ||
+      productToSave.amount === "" ||
+      productToSave.amount === -1
+    )
       alert("Amount input cant be 0 nor empty");
     else {
-      // problem with people using the buttons on input to insert numbers higher
-      // than the number of items availible. This should fix it
       if (productToSave.product.amount < productToSave.amount)
         productToSave.amount--;
 
       productToSave.product.amount -= productToSave.amount;
 
       let { boughtProducts } = this.state;
-      boughtProducts.push(productToSave);
+      let isProductAdded = false;
+      boughtProducts.forEach(product => {
+        if (product.product === productToSave.product) {
+          product.amount += productToSave.amount;
+          isProductAdded = true;
+        }
+      });
+
+      if (!isProductAdded) boughtProducts.push(productToSave);
 
       let { totalPrice } = this.state;
       totalPrice += productToSave.product.price * productToSave.amount;
@@ -111,6 +119,38 @@ export class CashRegister extends Component {
     }
   };
 
+  onPrintBill = () => {
+    const { boughtProducts } = this.state;
+    boughtProducts.forEach(product => {
+      const a = product.product.id;
+      const b = product.amount;
+      // axios
+      //   .post(`/api/products/editAmount`, {
+      //     newAmount: b,
+      //     productId: a
+      //   })
+      //   .then(() => {
+      //     // axios.get("/api/products/all").then(response => {
+      //     //   this.setState({ productsArray: response.data });
+      //     // });
+      //     this.setState({
+      //       boughtProducts: [],
+      //       totalPrice: 0
+      //     });
+      //     alert("Printing the bill");
+      //   })
+      //   .catch(() => alert("Unsuccessful"));
+
+      fetch("/api/products/editAmount", {
+        method: "POST", // or 'PUT'
+        body: JSON.stringify({ newAmount: b, productId: a }), // data can be `string` or {object}!
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(res => res.json());
+    });
+  };
+
   render() {
     const {
       isRegisterOpened,
@@ -121,19 +161,20 @@ export class CashRegister extends Component {
       productToSave,
       boughtProducts,
       totalPrice,
-      productsArray
+      productsArray,
+      loading
     } = this.state;
 
     // console.log("productsArray", this.state.productsArray);
     // console.log("boughtProducts", this.state.boughtProducts);
 
     if (!isRegisterOpened) return <p>Press ENTER to open the register...</p>;
+    if (loading) return <p>Loading...</p>;
 
     return (
       <div className="register-wrapper">
         <div>
           <h1>Product list</h1>
-
           <SortedSearch
             productsArray={productsArray}
             handleProductClick={this.onProductClick}
@@ -160,31 +201,11 @@ export class CashRegister extends Component {
           </div>
         </div>
 
-        <div>
-          <h1>Bought items</h1>
-          <div className="bought-list-wrapper">
-            <ul>
-              {boughtProducts.map((product, index) => (
-                <li key={index}>{product.product.type}</li>
-              ))}
-            </ul>
-
-            <ul>
-              {boughtProducts.map((product, index) => (
-                <li key={index}>-</li>
-              ))}
-            </ul>
-
-            <ul>
-              {boughtProducts.map((product, index) => (
-                <li className="bought-amount" key={index}>
-                  {product.amount}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <h5 className="price-display">Total: {totalPrice}</h5>
-        </div>
+        <BoughtItems
+          boughtProducts={boughtProducts}
+          totalPrice={totalPrice}
+          handlePrintBill={this.onPrintBill}
+        />
       </div>
     );
   }

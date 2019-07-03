@@ -5,6 +5,7 @@ export class SortedSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      productsArray: [],
       productsMatchingSearch: [],
       searchbarInput: "",
       productListVisibility: { display: "none" },
@@ -16,13 +17,12 @@ export class SortedSearch extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      productsArray: this.props.productsArray
-    });
+    this.setState({ productsArray: this.props.productsArray });
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
+      productsArray: nextProps.productsArray,
       isInputDisabled: nextProps.disabled,
       searchbarInput: nextProps.searchbarInput,
       productListVisibility: nextProps.productListVisibility
@@ -36,7 +36,7 @@ export class SortedSearch extends Component {
     searchbarInput = e.target.value;
     let products = productsArray.filter(product => {
       if (product.amount !== 0) {
-        const lowerCaseProduct = product.type.toLowerCase();
+        const lowerCaseProduct = product.name.toLowerCase();
         const filter = searchbarInput.toLowerCase();
         return lowerCaseProduct.includes(filter);
       } else return false;
@@ -74,7 +74,7 @@ export class SortedSearch extends Component {
               key={index}
               onClick={() => this.props.handleProductClick(product)}
             >
-              {product.type} - <i> in stock ({product.amount}</i>)
+              {product.name} - <i> in stock ({product.amount}</i>)
             </li>
           ))}
         </ul>

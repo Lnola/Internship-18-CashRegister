@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { AddProduct } from "./AddProduct";
 import { EditProduct } from "./EditProduct";
 import "./ProductInventory.css";
+import axios from "axios";
 // import "./CashRegister.css";
 
 export class ProductInventory extends Component {
@@ -10,16 +11,7 @@ export class ProductInventory extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      productsArray: [
-        { type: "apple", amount: 1, id: 0, price: 200 },
-        { type: "apples", amount: 1, id: 1, price: 200 },
-        { type: "applees", amount: 1, id: 2, price: 200 },
-        { type: "appleees", amount: 1, id: 3, price: 200 },
-        { type: "appleeees", amount: 1, id: 4, price: 200 },
-        { type: "orange", amount: 50, id: 5, price: 200 },
-        { type: "banana", amount: 200, id: 6, price: 200 },
-        { type: "lemon", amount: 20, id: 7, price: 200 }
-      ],
+      productsArray: [],
       searchbarInput: "",
       productListVisibility: { display: "none" },
       choiceButtonsVisibility: { display: "none" },
@@ -34,6 +26,7 @@ export class ProductInventory extends Component {
     const ESCAPE_KEY = 27;
     const ENTER_KEY = 13;
     const PLUS_KEY = 107;
+    const { isEditOpen, isAddOpen } = this.state;
 
     switch (event.keyCode) {
       case ESCAPE_KEY:
@@ -41,11 +34,11 @@ export class ProductInventory extends Component {
         break;
 
       case ENTER_KEY:
-        this.setState({ isEditOpen: true, isAddOpen: false });
+        if (!isEditOpen) this.setState({ isEditOpen: true, isAddOpen: false });
         break;
 
       case PLUS_KEY:
-        this.setState({ isAddOpen: true, isEditOpen: false });
+        if (!isAddOpen) this.setState({ isAddOpen: true, isEditOpen: false });
         break;
 
       default:
@@ -54,6 +47,10 @@ export class ProductInventory extends Component {
   };
 
   componentDidMount() {
+    axios.get("/api/products/all").then(response => {
+      this.setState({ productsArray: response.data, loading: false });
+    });
+
     document.addEventListener("keydown", this.handleKeyDown);
   }
 

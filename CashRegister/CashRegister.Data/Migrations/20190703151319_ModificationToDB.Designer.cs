@@ -4,14 +4,16 @@ using CashRegister.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CashRegister.Data.Migrations
 {
     [DbContext(typeof(CashRegisterContext))]
-    partial class CashRegisterContextModelSnapshot : ModelSnapshot
+    [Migration("20190703151319_ModificationToDB")]
+    partial class ModificationToDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,17 +31,11 @@ namespace CashRegister.Data.Migrations
 
                     b.Property<int?>("CashierRegisterRegisterId");
 
-                    b.Property<double>("ExciseDutyAmount");
-
-                    b.Property<Guid>("Guid");
-
                     b.Property<DateTime>("IssueDate");
 
                     b.Property<double>("TotalPriceWithTax");
 
                     b.Property<double>("TotalPriceWithoutTax");
-
-                    b.Property<double>("ValueAddedTaxAmount");
 
                     b.HasKey("Id");
 
@@ -53,10 +49,6 @@ namespace CashRegister.Data.Migrations
                     b.Property<int>("BillId");
 
                     b.Property<int>("ProductId");
-
-                    b.Property<double>("PriceAtPurchase");
-
-                    b.Property<int>("TaxAtPurchase");
 
                     b.HasKey("BillId", "ProductId");
 
@@ -99,13 +91,19 @@ namespace CashRegister.Data.Migrations
 
                     b.Property<string>("Barcode");
 
+                    b.Property<int?>("BillId");
+
+                    b.Property<int>("ExciseDuty");
+
                     b.Property<string>("Name");
 
                     b.Property<double>("Price");
 
-                    b.Property<int>("Tax");
+                    b.Property<int>("ValueAddedTax");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BillId");
 
                     b.ToTable("Products");
                 });
@@ -152,6 +150,13 @@ namespace CashRegister.Data.Migrations
                         .WithMany("CashierRegisters")
                         .HasForeignKey("RegisterId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("CashRegister.Data.Entities.Models.Product", b =>
+                {
+                    b.HasOne("CashRegister.Data.Entities.Models.Bill", "Bill")
+                        .WithMany()
+                        .HasForeignKey("BillId");
                 });
 #pragma warning restore 612, 618
         }
