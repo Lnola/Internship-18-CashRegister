@@ -26,6 +26,12 @@ namespace CashRegister.Web.Controllers
             return Ok(_productRepository.GetAllProducts());
         }
 
+        [HttpGet("matching")]
+        public IActionResult GetMatchingProducts(string input)
+        {
+            return Ok(_productRepository.GetProductsMatchingInput(input));
+        }
+
         [HttpPost("add")]
         public IActionResult AddProduct(Product productToAdd)
         {
@@ -45,9 +51,9 @@ namespace CashRegister.Web.Controllers
         }
 
         [HttpPost("editAmount")]
-        public IActionResult EditProductAmount(int id, int newAmount)
+        public IActionResult EditProductAmount(Product editedProduct)
         {
-            var wasEditSuccessful = _productRepository.EditProductAmount(id, newAmount);
+            var wasEditSuccessful = _productRepository.EditProductAmount(editedProduct.Id, editedProduct.Amount);
             if (wasEditSuccessful)
                 return Ok();
             return NotFound();

@@ -23,12 +23,19 @@ namespace CashRegister.Domain.Implementations
             return _context.Products.ToList();
         }
 
+        public List<Product> GetProductsMatchingInput(string input)
+        {
+            return _context.Products.Where(product => product.Name.Contains(input)).ToList();
+        }
+
         public bool AddProduct(Product productToAdd)
         {
             var doesProductExist = _context.Products.Any(product =>
                 string.Equals(product.Name, productToAdd.Name, StringComparison.CurrentCultureIgnoreCase));
 
-            if (doesProductExist)
+            var doesBarcodeExist = _context.Products.Any(product => Equals(product.Id, productToAdd.Id));
+
+            if (doesProductExist || doesBarcodeExist)
                 return false;
 
             _context.Products.Add(productToAdd);

@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import "./CashRegister/CashRegister.css";
+import { getMatchingProducts } from "./utils";
+import { debounce } from "throttle-debounce";
 
 export class SortedSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      productsArray: [],
       productsMatchingSearch: [],
       searchbarInput: "",
       productListVisibility: { display: "none" },
@@ -14,39 +15,57 @@ export class SortedSearch extends Component {
       productToSave: { product: {}, amount: "" },
       totalPrice: 0
     };
-  }
-
-  componentDidMount() {
-    this.setState({ productsArray: this.props.productsArray });
+    this.fetchMatchingProductsDebounced = debounce(
+      500,
+      this.fetchMatchingProducts
+    );
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      productsArray: nextProps.productsArray,
       isInputDisabled: nextProps.disabled,
       searchbarInput: nextProps.searchbarInput,
-      productListVisibility: nextProps.productListVisibility
+      productListVisibility: nextProps.productListVisibility,
+      boughtProducts: nextProps.boughtProducts
     });
   }
 
-  handleInput = e => {
-    let { searchbarInput } = this.state;
-    const { productsArray } = this.state;
+  setMatchingProducts = input => {
+    getMatchingProducts(input).then(response => {
+      const { boughtProducts } = this.state;
 
-    searchbarInput = e.target.value;
-    let products = productsArray.filter(product => {
-      if (product.amount !== 0) {
-        const lowerCaseProduct = product.name.toLowerCase();
-        const filter = searchbarInput.toLowerCase();
-        return lowerCaseProduct.includes(filter);
-      } else return false;
+      for (let i = 0; i < boughtProducts.length; i++)
+        for (let j = 0; j < response.data.length; j++) {
+          console.log(response.data, boughtProducts);
+          if (boughtProducts[i].product.name === response.data[j].name)
+            response.data[j].amount = boughtProducts[i].product.amount;
+        }
+
+      let products = response.data.filter(product => {
+        if (product.amount !== 0) return true;
+        return false;
+      });
+
+      if (response.data.length !== 0) {
+        this.setState({ productListVisibility: { display: "block" } });
+      } else this.setState({ productListVisibility: { display: "none" } });
+
+      this.setState({ productsMatchingSearch: products });
     });
+  };
 
-    if (searchbarInput !== "") {
-      this.setState({ productListVisibility: { display: "block" } });
-    } else this.setState({ productListVisibility: { display: "none" } });
+  handleInput = e => {
+    this.setState({ searchbarInput: e.target.value }, () => {
+      if (
+        this.state.searchbarInput.length >= 3 ||
+        this.state.searchbarInput.length === 0
+      )
+        this.fetchMatchingProductsDebounced(this.state.searchbarInput);
+    });
+  };
 
-    this.setState({ searchbarInput, productsMatchingSearch: products });
+  fetchMatchingProducts = input => {
+    this.setMatchingProducts(input);
   };
 
   render() {
