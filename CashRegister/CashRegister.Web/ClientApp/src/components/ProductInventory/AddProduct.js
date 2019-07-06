@@ -1,117 +1,30 @@
 import React, { Component } from "react";
-import { addNewProduct } from "../utils";
 
 export class AddProduct extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      customTaxVisibility: { display: "none" },
-      isCustomTaxVisible: false,
       nameInput: "",
       barcodeInput: "",
       amountInput: "",
       priceInput: "",
       customTaxInput: "",
-      radioInput: ""
+      radioInput: "",
+      isCustomTaxVisible: false
     };
   }
 
-  handleTextInputChange = (e, type) => {
-    const input = e.target.value;
-    switch (type) {
-      case "name":
-        this.setState({ nameInput: input });
-        break;
-
-      case "barcode":
-        if (input.length <= 13) this.setState({ barcodeInput: input });
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  handleNumberInputChange = (e, type) => {
-    let input = e.target.value;
-    switch (type) {
-      case "amount":
-        if (input !== "") {
-          input = parseInt(input, 10);
-          if (input > 0) this.setState({ amountInput: input });
-        } else this.setState({ amountInput: "" });
-        break;
-
-      case "price":
-        if (input !== "") {
-          input = parseInt(input, 10);
-          if (input > 0) this.setState({ priceInput: input });
-        } else this.setState({ priceInput: "" });
-        break;
-
-      case "custom":
-        if (input !== "") {
-          input = parseInt(input, 10);
-          if (input > 0) this.setState({ customTaxInput: input });
-        } else this.setState({ customTaxInput: "" });
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  handleRadioClick = e => {
-    if (e.target.value === "custom")
-      this.setState({ isCustomTaxVisible: true });
-    else this.setState({ isCustomTaxVisible: false });
-
-    this.setState({ radioInput: e.target.value });
-  };
-
-  handleCreateProduct = () => {
-    const {
-      nameInput,
-      barcodeInput,
-      amountInput,
-      priceInput,
-      customTaxInput,
-      radioInput
-    } = this.state;
-
-    if (
-      nameInput !== "" &&
-      barcodeInput !== "" &&
-      amountInput !== "" &&
-      priceInput !== "" &&
-      radioInput !== ""
-    ) {
-      let tax = 5;
-      let isCustomTaxFieldEmpty = false;
-      if (radioInput === "custom" && customTaxInput !== "")
-        tax = customTaxInput;
-      else if (radioInput !== "custom") {
-        if (radioInput === "VAT") tax = 25;
-      } else {
-        alert("Custom tax field can't be empty");
-        isCustomTaxFieldEmpty = true;
-      }
-
-      if (!isCustomTaxFieldEmpty) {
-        const productToAdd = {
-          name: nameInput,
-          barcode: barcodeInput,
-          price: priceInput,
-          tax: tax,
-          amount: amountInput
-        };
-
-        addNewProduct(productToAdd)
-          .then(() => alert("Add successful"))
-          .catch(() => alert("Add unsuccessful"));
-      }
-    } else alert("Fields can't be empty");
-  };
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      nameInput: nextProps.nameInput,
+      barcodeInput: nextProps.barcodeInput,
+      amountInput: nextProps.amountInput,
+      priceInput: nextProps.priceInput,
+      customTaxInput: nextProps.customTaxInput,
+      radioInput: nextProps.radioInput,
+      isCustomTaxVisible: nextProps.isCustomTaxVisible
+    });
+  }
 
   render() {
     const {
@@ -122,33 +35,40 @@ export class AddProduct extends Component {
       customTaxInput
     } = this.state;
 
+    const {
+      handleTextInputChange,
+      handleNumberInputChange,
+      handleRadioClick,
+      handleCreateProduct
+    } = this.props;
+
     return (
       <div>
         <h1>Add product</h1>
 
         <form className="add-product-wrapper">
           <input
-            onChange={e => this.handleTextInputChange(e, "name")}
+            onChange={e => handleTextInputChange(e, "name")}
             value={nameInput}
             type="text"
             placeholder="Product name..."
           />
           <input
-            onChange={e => this.handleTextInputChange(e, "barcode")}
+            onChange={e => handleTextInputChange(e, "barcode")}
             value={barcodeInput}
             type="text"
             placeholder="Barcode..."
           />
           <div className="number-input-wrapper">
             <input
-              onChange={e => this.handleNumberInputChange(e, "amount")}
+              onChange={e => handleNumberInputChange(e, "amount")}
               value={amountInput}
               className="number-input"
               type="number"
               placeholder="Amount..."
             />
             <input
-              onChange={e => this.handleNumberInputChange(e, "price")}
+              onChange={e => handleNumberInputChange(e, "price")}
               value={priceInput}
               className="number-input"
               type="number"
@@ -159,7 +79,7 @@ export class AddProduct extends Component {
             <div>
               <input
                 className="radio-input"
-                onChange={this.handleRadioClick}
+                onChange={handleRadioClick}
                 type="radio"
                 name="tax"
                 value="custom"
@@ -169,7 +89,7 @@ export class AddProduct extends Component {
             <div>
               <input
                 className="radio-input"
-                onChange={this.handleRadioClick}
+                onChange={handleRadioClick}
                 type="radio"
                 name="tax"
                 value="exciseDuty"
@@ -179,7 +99,7 @@ export class AddProduct extends Component {
             <div>
               <input
                 className="radio-input"
-                onChange={this.handleRadioClick}
+                onChange={handleRadioClick}
                 type="radio"
                 name="tax"
                 value="VAT"
@@ -190,7 +110,7 @@ export class AddProduct extends Component {
           {this.state.isCustomTaxVisible ? (
             <div>
               <input
-                onChange={e => this.handleNumberInputChange(e, "custom")}
+                onChange={e => handleNumberInputChange(e, "custom")}
                 value={customTaxInput}
                 className="custom-input"
                 type="number"
@@ -201,7 +121,7 @@ export class AddProduct extends Component {
             <div />
           )}
         </form>
-        <button onClick={this.handleCreateProduct} className="save-button">
+        <button onClick={handleCreateProduct} className="save-button">
           Save product
         </button>
       </div>

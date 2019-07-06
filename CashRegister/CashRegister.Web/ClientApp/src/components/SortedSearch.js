@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import "./CashRegister/CashRegister.css";
 import { getMatchingProducts } from "./utils";
 import { debounce } from "throttle-debounce";
+import "./CashRegister/CashRegister.css";
 
 export class SortedSearch extends Component {
   constructor(props) {
@@ -12,8 +12,7 @@ export class SortedSearch extends Component {
       productListVisibility: { display: "none" },
       isInputDisabled: false,
       boughtProducts: [],
-      productToSave: { product: {}, amount: "" },
-      totalPrice: 0
+      willDisplayAmountZero: this.props.isRegister
     };
     this.fetchMatchingProductsDebounced = debounce(
       500,
@@ -42,7 +41,8 @@ export class SortedSearch extends Component {
         }
 
       let products = response.data.filter(product => {
-        if (product.amount !== 0) return true;
+        if (product.amount !== 0 || !this.state.willDisplayAmountZero)
+          return true;
         return false;
       });
 

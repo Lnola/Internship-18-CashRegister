@@ -31,6 +31,11 @@
   width: 280px;
 }
 
+.button-edit {
+  width: 104px;
+  margin-right: 10px;
+}
+
 .radio-input-edit {
   margin-left: 0;
 }
@@ -45,7 +50,7 @@
 }
 
 .edit-submit {
-  margin-top: 10px;
+  width: 280px;
 }
 
 .edit-select-button {
@@ -80,4 +85,18 @@
 .number-input-wrapper {
   display: flex;
   justify-content: space-between;
+}
+
+.edit-form-wrapper {
+  max-width: 221px;
+}
+
+.number-input-edit {
+  width: 218px;
+  margin: 10px 0 20px 0;
+}
+
+.custom-input {
+  width: 218px;
+  margin-bottom: 20px;
 }

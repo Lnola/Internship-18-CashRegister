@@ -33,9 +33,7 @@ namespace CashRegister.Domain.Implementations
             var doesProductExist = _context.Products.Any(product =>
                 string.Equals(product.Name, productToAdd.Name, StringComparison.CurrentCultureIgnoreCase));
 
-            var doesBarcodeExist = _context.Products.Any(product => Equals(product.Id, productToAdd.Id));
-
-            if (doesProductExist || doesBarcodeExist)
+            if (doesProductExist || DoesBarcodeExist(productToAdd.Barcode))
                 return false;
 
             _context.Products.Add(productToAdd);
@@ -45,20 +43,27 @@ namespace CashRegister.Domain.Implementations
 
         public bool EditProduct(Product editedProduct)
         {
-            var didProductChange = !_context.Products.Any(product => product == editedProduct);
-
-            if (!didProductChange)
+            if (DoesBarcodeExist(editedProduct.Barcode))
                 return false;
 
             var productToEdit = _context.Products.Find(editedProduct.Id);
 
+            
+
             if (productToEdit == null)
+                return false;
+
+            var isProductUnchanged = string.Equals(editedProduct.Barcode, productToEdit.Barcode,
+                                       StringComparison.CurrentCulture) &&
+                                   Equals(editedProduct.Price, productToEdit.Price) &&
+                                   Equals(editedProduct.Tax, productToEdit.Tax);
+
+            if (isProductUnchanged || editedProduct.Barcode.Length < 13)
                 return false;
 
             productToEdit.Price = editedProduct.Price;
             productToEdit.Tax = editedProduct.Tax;
             productToEdit.Barcode = editedProduct.Barcode;
-            productToEdit.Amount= editedProduct.Amount;
             _context.SaveChanges();
 
             return true;
@@ -88,6 +93,14 @@ namespace CashRegister.Domain.Implementations
             _context.SaveChanges();
 
             return true;
+        }
+
+        private bool DoesBarcodeExist(string barcode)
+        {
+            var doesBarcodeExist = _context.Products.Any(product =>
+                string.Equals(product.Barcode, barcode, StringComparison.CurrentCulture));
+
+            return doesBarcodeExist;
         }
     }
 }

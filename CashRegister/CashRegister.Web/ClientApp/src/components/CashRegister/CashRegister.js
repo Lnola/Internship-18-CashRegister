@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import "./CashRegister.css";
 import { SortedSearch } from "../SortedSearch";
 import { BoughtItems } from "./BoughtItems";
 import { editAmount } from "../utils";
+import "./CashRegister.css";
 
 export class CashRegister extends Component {
   static displayName = CashRegister.name;
@@ -167,10 +167,11 @@ export class CashRegister extends Component {
           <h1>Product list</h1>
           <SortedSearch
             handleProductClick={this.onProductClick}
+            productListVisibility={productListVisibility}
             disabled={isInputDisabled}
             searchbarInput={searchbarInput}
-            productListVisibility={productListVisibility}
             boughtProducts={boughtProducts}
+            isRegister={true}
           />
 
           <div className="amount-modal" style={productAmountVisibility}>
@@ -192,9 +193,9 @@ export class CashRegister extends Component {
         </div>
 
         <BoughtItems
+          handlePrintBill={this.onPrintBill}
           boughtProducts={boughtProducts}
           totalPrice={totalPrice}
-          handlePrintBill={this.onPrintBill}
         />
       </div>
     );

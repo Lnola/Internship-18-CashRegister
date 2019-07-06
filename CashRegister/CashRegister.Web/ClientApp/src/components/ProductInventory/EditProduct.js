@@ -8,15 +8,27 @@ export class EditProduct extends Component {
       isInputDisabled: false,
       editInputsVisibility: { display: "none" },
       newShipmentVisibility: { display: "none" },
-      editOrShipmentVisibility: { display: "none" }
+      editOrShipmentVisibility: { display: "none" },
+      barcodeInput: "",
+      amountInput: "",
+      priceInput: "",
+      customTaxInput: "",
+      radioInput: ""
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
+      productListVisibility: nextProps.productListVisibility,
       isInputDisabled: nextProps.isInputDisabled,
       searchbarInput: nextProps.searchbarInput,
-      editOrShipmentVisibility: nextProps.choiceButtonsVisibility
+      editOrShipmentVisibility: nextProps.choiceButtonsVisibility,
+      barcodeInput: nextProps.barcodeInput,
+      amountInput: nextProps.amountInput,
+      priceInput: nextProps.priceInput,
+      customTaxInput: nextProps.customTaxInput,
+      radioInput: nextProps.radioInput,
+      isCustomTaxVisible: nextProps.isCustomTaxVisible
     });
   }
 
@@ -43,34 +55,39 @@ export class EditProduct extends Component {
     });
   };
 
-  handleSaveEdit = () => {
-    // const { newBarcode, isVAT, newPrice } = this.state;
-  };
-
   render() {
     const {
-      productsArray,
-      onProductClick,
-      productListVisibility,
-      productToEdit
+      handleTextInputChange,
+      handleNumberInputChange,
+      handleRadioClick,
+      handleSaveEdit,
+      handleSaveAmountChange,
+      onProductClick
     } = this.props;
     const {
-      searchbarInput,
+      productListVisibility,
       isInputDisabled,
+      searchbarInput,
       editInputsVisibility,
       newShipmentVisibility,
-      editOrShipmentVisibility
+      editOrShipmentVisibility,
+      barcodeInput,
+      priceInput,
+      radioInput,
+      customTaxInput,
+      amountInput
     } = this.state;
 
     return (
       <div>
         <h1>Edit product</h1>
         <SortedSearch
-          productsArray={productsArray}
           handleProductClick={onProductClick}
-          searchbarInput={searchbarInput}
           productListVisibility={productListVisibility}
           disabled={isInputDisabled}
+          searchbarInput={searchbarInput}
+          boughtProducts={[]}
+          isRegister={false}
         />
 
         <div style={editOrShipmentVisibility}>
@@ -86,41 +103,73 @@ export class EditProduct extends Component {
         </div>
 
         <div style={editInputsVisibility}>
-          <input className="edit-input" type="text" placeholder="Barcode..." />
-          <div className="radio-wrapper">
-            <div>
-              <input
-                className="radio-input"
-                type="radio"
-                name="tax"
-                value="VAT"
-              />
-              VAT
-            </div>
-            <div>
-              <input
-                className="radio-input radio-input-edit"
-                type="radio"
-                name="tax"
-                value="ExciseDuty"
-              />
-              Excise Duty
-            </div>
-          </div>
-          <div className="edit-submit">
+          <form className="edit-form-wrapper">
             <input
-              className="number-input"
+              className="edit-input"
+              onChange={e => handleTextInputChange(e, "barcode")}
+              value={barcodeInput}
+              type="text"
+              placeholder="Barcode..."
+            />
+            <input
+              className="number-input-edit"
+              onChange={e => handleNumberInputChange(e, "price")}
               type="number"
               placeholder="HRK..."
-              value={productToEdit.price}
+              value={priceInput}
             />
-            <button
-              className="save-button-edit"
-              onClick={this.handleCancelEdit}
-            >
+            <p>Current tax type: {radioInput}</p>
+            <div className="radio-wrapper">
+              <div>
+                <input
+                  className="radio-input"
+                  onChange={handleRadioClick}
+                  type="radio"
+                  name="tax"
+                  value="custom"
+                />
+                Custom
+              </div>
+              <div>
+                <input
+                  className="radio-input"
+                  onChange={handleRadioClick}
+                  type="radio"
+                  name="tax"
+                  value="exciseDuty"
+                />
+                Excise Duty
+              </div>
+              <div>
+                <input
+                  className="radio-input"
+                  onChange={handleRadioClick}
+                  type="radio"
+                  name="tax"
+                  value="VAT"
+                />
+                VAT
+              </div>
+            </div>
+            {this.state.isCustomTaxVisible ? (
+              <div>
+                <input
+                  onChange={e => handleNumberInputChange(e, "custom")}
+                  value={customTaxInput}
+                  className="custom-input"
+                  type="number"
+                  placeholder="Custom tax..."
+                />
+              </div>
+            ) : (
+              <div />
+            )}
+          </form>
+          <div className="edit-submit">
+            <button className="button-edit" onClick={handleSaveEdit}>
               Save
             </button>
-            <button className="cancel-button" onClick={this.handleCancelEdit}>
+            <button className="button-edit" onClick={this.handleCancelEdit}>
               Cancel
             </button>
           </div>
@@ -130,13 +179,15 @@ export class EditProduct extends Component {
           <div className="shipment-wrapper">
             <input
               className="shipment-input"
+              onChange={e => handleNumberInputChange(e, "amount")}
+              value={amountInput}
               type="number"
               placeholder="Amount that arrived..."
             />
             <div>
               <button
                 className="shipment-button"
-                onClick={this.handleCancelEdit}
+                onClick={handleSaveAmountChange}
               >
                 Save
               </button>

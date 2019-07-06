@@ -1,11 +1,4 @@
 import axios from "axios";
-import { toASCII } from "punycode";
-
-export const editAmount = (id, amount) =>
-  axios.post(`/api/products/editAmount`, {
-    id: id,
-    amount: amount
-  });
 
 export const getAllProducts = () => axios.get("/api/products/all");
 
@@ -19,4 +12,18 @@ export const addNewProduct = productToAdd =>
     price: productToAdd.price,
     tax: productToAdd.tax,
     amount: productToAdd.amount
+  });
+
+export const editProduct = editedProduct =>
+  axios.post("/api/products/edit", {
+    id: editedProduct.id,
+    barcode: editedProduct.barcode,
+    tax: editedProduct.tax,
+    price: editedProduct.price
+  });
+
+export const editAmount = (id, amount) =>
+  axios.post(`/api/products/editAmount`, {
+    id: id,
+    amount: amount
   });
