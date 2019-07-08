@@ -5,6 +5,7 @@ import {
   getTotalWithVAT,
   getTotalWithExciseDuty
 } from "./utils";
+import { bigIntLiteral } from "@babel/types";
 
 export class Bill extends Component {
   constructor(props) {
@@ -28,7 +29,7 @@ export class Bill extends Component {
         <p>Cash Register: {bill.register}</p>
         <p>Cashier: {bill.cashier}</p>
 
-        <div className="products-list">
+        {/* <div className="products-list">
           <ul className="t-a-start">
             <li>Name:</li>
             <br />
@@ -52,15 +53,15 @@ export class Bill extends Component {
               <li key={index}>{product.price}</li>
             ))}
           </ul>
-        </div>
+        </div> */}
 
-        <p>Final: {getTotalWithTax(bill.products)}</p>
-        <p>Price without tax: {getTotalWithoutTax(bill.products)}</p>
-        <p>Price for VAT: {getTotalWithVAT(bill.products)}</p>
-        <p>Price for excise duty: {getTotalWithExciseDuty(bill.products)}</p>
+        <p>Final: {bill.totalPriceWithTax}</p>
+        <p>Price without tax: {bill.totalPriceWithoutTax}</p>
+        <p>Price for VAT: {bill.valueAddedTaxAmount}</p>
+        <p>Price for excise duty: {bill.exciseDutyAmount}</p>
 
         <p>GUID - {bill.guid}</p>
-        <p>Date of issue - {bill.dateOfIssue}</p>
+        <p>Date of issue - {bill.issueDate}</p>
       </div>
     );
   }

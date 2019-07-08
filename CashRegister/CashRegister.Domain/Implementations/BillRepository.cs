@@ -19,7 +19,12 @@ namespace CashRegister.Domain.Implementations
 
         public List<Bill> GetTenBills(int startPosition)
         {
-            return _context.Bills.OrderByDescending(bill => bill.IssueDate).Skip(startPosition).Take(1).ToList();
+            return _context.Bills.OrderByDescending(bill => bill.IssueDate).Skip(startPosition).Take(10).ToList();
+        }
+
+        public List<Bill> GetSearchedBills(string dateInput)
+        {
+            return _context.Bills.Where(bill => bill.IssueDate.ToString("O").Contains(dateInput)).ToList();
         }
     }
 }

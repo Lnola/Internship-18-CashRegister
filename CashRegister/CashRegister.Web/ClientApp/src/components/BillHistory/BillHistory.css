@@ -2,12 +2,13 @@
   width: 218px;
 }
 
-.bills-container li:hover {
+.bills-container li:nth-child(2n) {
   background-color: whitesmoke;
 }
 
-.bills-container li {
-  margin-bottom: 1000px;
+.bills-container li:hover {
+  background-color: rgba(80, 76, 76, 0.226);
+  cursor: pointer;
 }
 
 .bill-search {
@@ -36,6 +37,8 @@
   text-align: start !important;
 }
 
-.items-list {
-  overflow: scroll;
+.bills-container li p {
+  display: inline-block;
+  font-size: 11px;
+  margin-bottom: 5px;
 }

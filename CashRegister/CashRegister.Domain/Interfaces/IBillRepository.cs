@@ -8,5 +8,6 @@ namespace CashRegister.Domain.Interfaces
     public interface IBillRepository
     {
         List<Bill> GetTenBills(int startPosition);
+        List<Bill> GetSearchedBills(string dateInput);
     }
 }

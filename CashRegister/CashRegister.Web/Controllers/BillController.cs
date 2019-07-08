@@ -24,5 +24,11 @@ namespace CashRegister.Web.Controllers
         {
             return Ok(_billRepository.GetTenBills(startingPosition));
         }
+
+        [HttpGet("get-similar")]
+        public IActionResult GetSimilarBills(string dateInput)
+        {
+            return Ok(_billRepository.GetSearchedBills(dateInput));
+        }
     }
 }

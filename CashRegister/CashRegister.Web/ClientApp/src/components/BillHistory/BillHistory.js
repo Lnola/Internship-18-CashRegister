@@ -3,6 +3,8 @@ import "./BillHistory.css";
 import { Bill } from "./Bill";
 import Axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
+import DatePicker from "react-date-picker";
+import { getTenBills, getSimilarBills } from "../utils";
 
 export class BillHistory extends Component {
   static displayName = BillHistory.name;
@@ -10,152 +12,6 @@ export class BillHistory extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      billArray: [
-        {
-          guid: "1111111111",
-          register: 1,
-          cashier: 1,
-          dateOfIssue: "12 / 2 / 2019",
-          products: [
-            { type: "apple1", amount: 1, price: 200 },
-            { type: "orange", amount: 50, price: 200 },
-            { type: "banana", amount: 200, price: 200 },
-            { type: "lemon", amount: 20, price: 200 }
-          ]
-        },
-        {
-          guid: "1111111112",
-          register: 1,
-          cashier: 1,
-          dateOfIssue: "12 / 2 / 2019",
-          products: [
-            { type: "apple2", amount: 1, price: 200 },
-            { type: "orange", amount: 50, price: 200 },
-            { type: "banana", amount: 200, price: 200 },
-            { type: "lemon", amount: 20, price: 200 }
-          ]
-        },
-        {
-          guid: "1111111114",
-          register: 1,
-          cashier: 1,
-          dateOfIssue: "12 / 2 / 2019",
-          products: [
-            { type: "apple3", amount: 1, price: 200 },
-            { type: "orange", amount: 50, price: 200 },
-            { type: "banana", amount: 200, price: 200 },
-            { type: "lemon", amount: 20, price: 200 }
-          ]
-        },
-        {
-          guid: "1111111113",
-          register: 1,
-          cashier: 1,
-          dateOfIssue: "12 / 2 / 2019",
-          products: [
-            { type: "apple4", amount: 1, price: 200 },
-            { type: "orange", amount: 50, price: 200 },
-            { type: "banana", amount: 200, price: 200 },
-            { type: "lemon", amount: 20, price: 200 }
-          ]
-        },
-        {
-          guid: "1111111115",
-          register: 1,
-          cashier: 1,
-          dateOfIssue: "12 / 2 / 2019",
-          products: [
-            { type: "apple5", amount: 1, price: 200 },
-            { type: "orange", amount: 50, price: 200 },
-            { type: "banana", amount: 200, price: 200 },
-            { type: "lemon", amount: 20, price: 200 }
-          ]
-        },
-        {
-          guid: "1111111116",
-          register: 1,
-          cashier: 1,
-          dateOfIssue: "12 / 2 / 2019",
-          products: [
-            { type: "apple6", amount: 1, price: 200 },
-            { type: "orange", amount: 50, price: 200 },
-            { type: "banana", amount: 200, price: 200 },
-            { type: "lemon", amount: 20, price: 200 }
-          ]
-        },
-        {
-          guid: "1111111117",
-          register: 1,
-          cashier: 1,
-          dateOfIssue: "12 / 2 / 2019",
-          products: [
-            { type: "apple7", amount: 1, price: 200 },
-            { type: "orange", amount: 50, price: 200 },
-            { type: "banana", amount: 200, price: 200 },
-            { type: "lemon", amount: 20, price: 200 }
-          ]
-        },
-        {
-          guid: "1111111118",
-          register: 1,
-          cashier: 1,
-          dateOfIssue: "12 / 2 / 2019",
-          products: [
-            { type: "apple8", amount: 1, price: 200 },
-            { type: "orange", amount: 50, price: 200 },
-            { type: "banana", amount: 200, price: 200 },
-            { type: "lemon", amount: 20, price: 200 }
-          ]
-        },
-        {
-          guid: "1111111119",
-          register: 1,
-          cashier: 1,
-          dateOfIssue: "12 / 2 / 2019",
-          products: [
-            { type: "apple9", amount: 1, price: 200 },
-            { type: "orange", amount: 50, price: 200 },
-            { type: "banana", amount: 200, price: 200 },
-            { type: "lemon", amount: 20, price: 200 }
-          ]
-        },
-        {
-          guid: "1111111110",
-          register: 1,
-          cashier: 1,
-          dateOfIssue: "12 / 2 / 2019",
-          products: [
-            { type: "apple12", amount: 1, price: 200 },
-            { type: "orange", amount: 50, price: 200 },
-            { type: "banana", amount: 200, price: 200 },
-            { type: "lemon", amount: 20, price: 200 }
-          ]
-        },
-        {
-          guid: "1111111121",
-          register: 1,
-          cashier: 1,
-          dateOfIssue: "12 / 2 / 2019",
-          products: [
-            { type: "apple13", amount: 1, price: 200 },
-            { type: "orange", amount: 50, price: 200 },
-            { type: "banana", amount: 200, price: 200 },
-            { type: "lemon", amount: 20, price: 200 }
-          ]
-        },
-        {
-          guid: "1111111122",
-          register: 1,
-          cashier: 1,
-          dateOfIssue: "12 / 2 / 2019",
-          products: [
-            { type: "apple14", amount: 1, price: 200 },
-            { type: "orange", amount: 50, price: 200 },
-            { type: "banana", amount: 200, price: 200 },
-            { type: "lemon", amount: 20, price: 200 }
-          ]
-        }
-      ],
       billsMatchingSearch: [],
       searchbarInput: "",
       billVisibility: { display: "none" },
@@ -166,31 +22,42 @@ export class BillHistory extends Component {
         dateOfIssue: "12 / 2 / 2019",
         products: [{ type: "apple", amount: 1, price: 200 }]
       },
-      bills: [],
-      hasMore: true
+      hasMore: true,
+      startingPosition: 10
     };
   }
 
   componentDidMount() {
-    Axios.get("/api/bills/get-ten", { params: { startingPosition: 0 } }).then(
-      response => {
-        this.setState({ bills: response.data });
-      }
-    );
-
-    this.setState({ billsMatchingSearch: this.state.billArray });
+    getTenBills(0).then(response => {
+      this.setState({
+        billsMatchingSearch: response.data
+      });
+    });
   }
 
   handleSearchInput = e => {
     let { searchbarInput } = this.state;
-    const { billArray } = this.state;
 
     searchbarInput = e.target.value;
-    let bills = billArray.filter(bill => {
-      return bill.guid.includes(searchbarInput);
-    });
+    this.setState({ searchbarInput });
 
-    this.setState({ searchbarInput, billsMatchingSearch: bills });
+    if (searchbarInput.length > 3)
+      getSimilarBills(searchbarInput).then(response => {
+        this.setState({
+          billsMatchingSearch: response.data
+        });
+      });
+    else if (searchbarInput.length === 0) {
+      this.setState({
+        billsMatchingSearch: [],
+        startingPosition: 0,
+        hasMore: true
+      });
+
+      setTimeout(() => {
+        this.fetchMoreData();
+      }, 300);
+    }
   };
 
   handleBillClick = index => {
@@ -201,12 +68,16 @@ export class BillHistory extends Component {
   };
 
   fetchMoreData = () => {
-    Axios.get("/api/bills/get-ten", { params: { startingPosition: 0 } }).then(
-      response => {
-        console.log(response.data);
-        this.setState({ bills: this.state.bills.concat(response.data) });
-      }
-    );
+    const { startingPosition, billsMatchingSearch } = this.state;
+
+    getTenBills(startingPosition).then(response => {
+      if (response.data.length === 0) this.setState({ hasMore: false });
+      else
+        this.setState({
+          billsMatchingSearch: billsMatchingSearch.concat(response.data),
+          startingPosition: startingPosition + 10
+        });
+    });
   };
 
   render() {
@@ -214,7 +85,8 @@ export class BillHistory extends Component {
       billsMatchingSearch,
       searchbarInput,
       displayedBill,
-      billVisibility
+      billVisibility,
+      hasMore
     } = this.state;
 
     return (
@@ -225,21 +97,28 @@ export class BillHistory extends Component {
           <input
             className="bill-search"
             type="text"
-            placeholder=" Search for a bill..."
             onChange={this.handleSearchInput}
             value={searchbarInput}
+            placeholder="Date format yyyy-mm-dd..."
           />
+
           <div className="items-list">
             <InfiniteScroll
-              dataLength={this.state.bills.length}
+              dataLength={billsMatchingSearch.length}
               next={this.fetchMoreData}
-              hasMore={true}
+              hasMore={hasMore}
               loader={<h4>Loading...</h4>}
+              height={400}
+              endMessage={
+                <p>
+                  <b>No more bills</b>
+                </p>
+              }
             >
               <ul className="bills-container">
-                {this.state.bills.map((bill, index) => (
+                {billsMatchingSearch.map((bill, index) => (
                   <li onClick={() => this.handleBillClick(index)} key={index}>
-                    {bill.guid}
+                    <p>{bill.guid}</p> - <p>{bill.issueDate}</p>
                   </li>
                 ))}
               </ul>

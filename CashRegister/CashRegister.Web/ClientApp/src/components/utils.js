@@ -27,3 +27,11 @@ export const editAmount = (id, amount) =>
     id: id,
     amount: amount
   });
+
+export const getTenBills = startingPosition =>
+  axios.get("/api/bills/get-ten", { params: { startingPosition } });
+
+export const getSimilarBills = searchbarInput =>
+  axios.get("/api/bills/get-similar", {
+    params: { dateInput: searchbarInput }
+  });
