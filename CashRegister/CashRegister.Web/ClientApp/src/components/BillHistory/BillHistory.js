@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "./BillHistory.css";
 import { Bill } from "./Bill";
+import Axios from "axios";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export class BillHistory extends Component {
   static displayName = BillHistory.name;
@@ -163,11 +165,19 @@ export class BillHistory extends Component {
         cashier: 1,
         dateOfIssue: "12 / 2 / 2019",
         products: [{ type: "apple", amount: 1, price: 200 }]
-      }
+      },
+      bills: [],
+      hasMore: true
     };
   }
 
   componentDidMount() {
+    Axios.get("/api/bills/get-ten", { params: { startingPosition: 0 } }).then(
+      response => {
+        this.setState({ bills: response.data });
+      }
+    );
+
     this.setState({ billsMatchingSearch: this.state.billArray });
   }
 
@@ -190,6 +200,15 @@ export class BillHistory extends Component {
     });
   };
 
+  fetchMoreData = () => {
+    Axios.get("/api/bills/get-ten", { params: { startingPosition: 0 } }).then(
+      response => {
+        console.log(response.data);
+        this.setState({ bills: this.state.bills.concat(response.data) });
+      }
+    );
+  };
+
   render() {
     const {
       billsMatchingSearch,
@@ -210,14 +229,22 @@ export class BillHistory extends Component {
             onChange={this.handleSearchInput}
             value={searchbarInput}
           />
-
-          <ul className="bills-container">
-            {billsMatchingSearch.map((bill, index) => (
-              <li onClick={() => this.handleBillClick(index)} key={index}>
-                {bill.guid}
-              </li>
-            ))}
-          </ul>
+          <div className="items-list">
+            <InfiniteScroll
+              dataLength={this.state.bills.length}
+              next={this.fetchMoreData}
+              hasMore={true}
+              loader={<h4>Loading...</h4>}
+            >
+              <ul className="bills-container">
+                {this.state.bills.map((bill, index) => (
+                  <li onClick={() => this.handleBillClick(index)} key={index}>
+                    {bill.guid}
+                  </li>
+                ))}
+              </ul>
+            </InfiniteScroll>
+          </div>
         </div>
 
         <div style={billVisibility}>

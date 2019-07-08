@@ -20,7 +20,7 @@ export class Bill extends Component {
 
   render() {
     const { bill } = this.state;
-    console.log(bill);
+    // console.log(bill);
 
     return (
       <div className="bill">

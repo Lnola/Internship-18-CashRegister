@@ -6,6 +6,10 @@
   background-color: whitesmoke;
 }
 
+.bills-container li {
+  margin-bottom: 1000px;
+}
+
 .bill-search {
   width: 218px;
 }
@@ -30,4 +34,8 @@
 
 .t-a-start {
   text-align: start !important;
+}
+
+.items-list {
+  overflow: scroll;
 }
