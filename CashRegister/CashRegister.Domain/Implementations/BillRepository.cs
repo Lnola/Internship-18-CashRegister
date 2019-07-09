@@ -8,7 +8,7 @@ using CashRegister.Domain.Interfaces;
 
 namespace CashRegister.Domain.Implementations
 {
-    public class BillRepository: IBillRepository
+    public class BillRepository : IBillRepository
     {
         private readonly CashRegisterContext _context;
 
@@ -25,6 +25,38 @@ namespace CashRegister.Domain.Implementations
         public List<Bill> GetSearchedBills(string dateInput)
         {
             return _context.Bills.Where(bill => bill.IssueDate.ToString("O").Contains(dateInput)).ToList();
+        }
+
+        public bool AddBill(Bill billToAdd, List<BillProduct> productsToAddToBill)
+        {
+            var doesGuidExist = _context.Bills.Any(bill => bill.Guid.Equals(billToAdd.Guid));
+
+            if (doesGuidExist)
+                return false;
+
+            var doesBillExist = _context.Bills.Any(bill => bill.Id.Equals(billToAdd.Id));
+
+            if (!doesBillExist)
+                return false;
+
+            var billProductRepository = new BillProductRepository(_context);
+            var productRepository = new ProductRepository(_context);
+
+            foreach (var productToAdd in productsToAddToBill)
+            {
+                var wasAddSuccessful = billProductRepository.AddBillProduct(productToAdd);
+                if (!wasAddSuccessful)
+                    return false;
+
+                var wasEditAmountSuccessful = productRepository.EditProductAmount(productToAdd.ProductId, productToAdd.Product.Amount);
+                if (!wasEditAmountSuccessful)
+                    return false;
+            }
+
+            _context.Bills.Add(billToAdd);
+            _context.SaveChanges();
+
+            return true;
         }
     }
 }

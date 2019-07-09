@@ -1,11 +1,4 @@
 import React, { Component } from "react";
-import {
-  getTotalWithTax,
-  getTotalWithoutTax,
-  getTotalWithVAT,
-  getTotalWithExciseDuty
-} from "./utils";
-import { bigIntLiteral } from "@babel/types";
 
 export class Bill extends Component {
   constructor(props) {
@@ -21,11 +14,10 @@ export class Bill extends Component {
 
   render() {
     const { bill } = this.state;
-    // console.log(bill);
 
     return (
       <div className="bill">
-        <h1>Bill - {bill.guid}</h1>
+        <h5>Bill - {bill.guid}</h5>
         <p>Cash Register: {bill.register}</p>
         <p>Cashier: {bill.cashier}</p>
 

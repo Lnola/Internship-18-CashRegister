@@ -23,7 +23,7 @@ export const editProduct = editedProduct =>
   });
 
 export const editAmount = (id, amount) =>
-  axios.post(`/api/products/editAmount`, {
+  axios.post("/api/products/editAmount", {
     id: id,
     amount: amount
   });
@@ -34,4 +34,12 @@ export const getTenBills = startingPosition =>
 export const getSimilarBills = searchbarInput =>
   axios.get("/api/bills/get-similar", {
     params: { dateInput: searchbarInput }
+  });
+
+export const addProductToBill = billProductToAdd =>
+  axios.post("/api/billProducts/add", {
+    billId: billProductToAdd.billId,
+    productId: billProductToAdd.productId,
+    priceAtPurchase: billProductToAdd.price,
+    taxAtPuchase: billProductToAdd.tax
   });

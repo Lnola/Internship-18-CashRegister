@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CashRegister.Data.Entities.Models;
 using CashRegister.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,16 @@ namespace CashRegister.Web.Controllers
         public IActionResult GetSimilarBills(string dateInput)
         {
             return Ok(_billRepository.GetSearchedBills(dateInput));
+        }
+
+        [HttpPost("add")]
+        public IActionResult AddBill(Bill billToAdd)
+        {
+            var wasAddSuccessful = _billRepository.AddBill(billToAdd, billToAdd.BillProducts.ToList());
+            if (wasAddSuccessful)
+                return Ok();
+
+            return Forbid();
         }
     }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { SortedSearch } from "../SortedSearch";
 import { BoughtItems } from "./BoughtItems";
-import { editAmount } from "../utils";
+import { editAmount, addProductToBill } from "../utils";
 import "./CashRegister.css";
 
 export class CashRegister extends Component {

@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import "./BillHistory.css";
 import { Bill } from "./Bill";
-import Axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
-import DatePicker from "react-date-picker";
 import { getTenBills, getSimilarBills } from "../utils";
 
 export class BillHistory extends Component {
@@ -32,6 +30,8 @@ export class BillHistory extends Component {
       this.setState({
         billsMatchingSearch: response.data
       });
+
+      if (response.data.length < 10) this.setState({ hasMore: false });
     });
   }
 
@@ -78,6 +78,7 @@ export class BillHistory extends Component {
           startingPosition: startingPosition + 10
         });
     });
+    console.log(this.state.billsMatchingSearch.length);
   };
 
   render() {
@@ -107,7 +108,11 @@ export class BillHistory extends Component {
               dataLength={billsMatchingSearch.length}
               next={this.fetchMoreData}
               hasMore={hasMore}
-              loader={<h4>Loading...</h4>}
+              loader={
+                <p>
+                  <b>Loading...</b>
+                </p>
+              }
               height={400}
               endMessage={
                 <p>

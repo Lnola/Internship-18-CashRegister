@@ -13,6 +13,7 @@ namespace CashRegister.Data.Entities
         }
 
         public DbSet<Bill> Bills { get; set; }
+        public DbSet<BillProduct> BillProducts { get; set; }
         public DbSet<Cashier> Cashiers { get; set; }
         public DbSet<CashierRegister> CashierRegisters { get; set; }
         public DbSet<Product> Products { get; set; }
