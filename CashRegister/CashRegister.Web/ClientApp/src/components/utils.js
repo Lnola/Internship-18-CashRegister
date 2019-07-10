@@ -43,3 +43,13 @@ export const addProductToBill = billProductToAdd =>
     priceAtPurchase: billProductToAdd.price,
     taxAtPuchase: billProductToAdd.tax
   });
+
+export const addBill = billToAdd =>
+  axios.post("/api/bills/add", {
+    totalPriceWithoutTax: billToAdd.totalPriceWithoutTax,
+    exciseDutyAmount: billToAdd.exciseDutyAmount,
+    valueAddedTaxAmount: billToAdd.valueAddedTaxAmount,
+    customTaxAmount: billToAdd.customTaxAmount,
+    totalPriceWithTax: billToAdd.totalPriceWithTax,
+    billProducts: billToAdd.billProducts
+  });

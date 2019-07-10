@@ -35,7 +35,7 @@ export class SortedSearch extends Component {
 
       for (let i = 0; i < boughtProducts.length; i++)
         for (let j = 0; j < response.data.length; j++) {
-          console.log(response.data, boughtProducts);
+          // console.log(response.data, boughtProducts);
           if (boughtProducts[i].product.name === response.data[j].name)
             response.data[j].amount = boughtProducts[i].product.amount;
         }

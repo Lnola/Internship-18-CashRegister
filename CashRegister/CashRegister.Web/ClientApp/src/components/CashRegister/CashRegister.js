@@ -1,8 +1,13 @@
 import React, { Component } from "react";
 import { SortedSearch } from "../SortedSearch";
 import { BoughtItems } from "./BoughtItems";
-import { editAmount, addProductToBill } from "../utils";
+import { editAmount, addProductToBill, addBill } from "../utils";
 import "./CashRegister.css";
+import {
+  getTotalWithoutTax,
+  getTotalTaxForTaxType,
+  getBillProductsFromProducts
+} from "../BillHistory/utils";
 
 export class CashRegister extends Component {
   static displayName = CashRegister.name;
@@ -127,18 +132,45 @@ export class CashRegister extends Component {
   };
 
   onPrintBill = () => {
-    const { boughtProducts } = this.state;
-    boughtProducts.forEach(product => {
-      editAmount(product.product.id, product.product.amount)
-        .then(() => {
-          this.setState({
-            boughtProducts: [],
-            totalPrice: 0
-          });
-          alert("Printing the bill");
-        })
-        .catch(() => alert("Unsuccessful"));
-    });
+    const { boughtProducts, totalPrice } = this.state;
+    // boughtProducts.forEach(product => {
+    //   editAmount(product.product.id, product.product.amount)
+    //     .then(() => {
+    //       this.setState({
+    //         boughtProducts: [],
+    //         totalPrice: 0
+    //       });
+    //       alert("Printing the bill");
+    //     })
+    //     .catch(() => alert("Unsuccessful"));
+
+    // });
+    const billToAdd = {
+      totalPriceWithoutTax: getTotalWithoutTax(boughtProducts),
+      exciseDutyAmount: getTotalTaxForTaxType(
+        boughtProducts,
+        "exciseDuty",
+        totalPrice
+      ),
+      valueAddedTaxAmount: getTotalTaxForTaxType(
+        boughtProducts,
+        "VAT",
+        totalPrice
+      ),
+      customTaxAmount: getTotalTaxForTaxType(
+        boughtProducts,
+        "custom",
+        totalPrice
+      ),
+      totalPriceWithTax: totalPrice,
+      billProducts: getBillProductsFromProducts(boughtProducts)
+    };
+
+    console.log(billToAdd);
+
+    addBill(billToAdd)
+      .then(() => alert("Success"))
+      .catch(() => "Unsuccessful");
   };
 
   render() {

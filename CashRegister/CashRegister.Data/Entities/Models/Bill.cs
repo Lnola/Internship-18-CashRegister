@@ -13,6 +13,7 @@ namespace CashRegister.Data.Entities.Models
         public double TotalPriceWithoutTax { get; set; }
         public double ExciseDutyAmount { get; set; }
         public double ValueAddedTaxAmount { get; set; }
+        public double CustomTaxAmount { get; set; }
         public double TotalPriceWithTax { get; set; }
         public CashierRegister CashierRegister { get; set; }
         public ICollection<BillProduct> BillProducts { get; set; }

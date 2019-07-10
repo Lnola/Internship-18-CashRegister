@@ -1,37 +1,54 @@
-export const getTotalWithTax = products => {
-  let total = 0;
-  products.forEach(product => {
-    total += product.price;
-  });
-
-  return total;
-};
-
 export const getTotalWithoutTax = products => {
   let total = 0;
   products.forEach(product => {
-    total += getPriceWithoutTax(product.price, 25);
+    total +=
+      getPriceWithoutTax(product.product.price, product.product.tax) *
+      product.amount;
   });
 
-  return total;
+  return parseInt(total.toFixed(2), 10);
 };
 
-export const getTotalWithVAT = products => {
+export const getTotalTaxForTaxType = (products, type, totalPrice) => {
   let total = 0;
+
+  let taxRate = 0;
+  if (type === "exciseDuty") taxRate = 5;
+  else if (type === "VAT") taxRate = 25;
+
   products.forEach(product => {
-    total += getPriceWithoutTax(product.price, 25) * (1 + 25 / 100);
+    if (
+      type === "custom" &&
+      product.product.tax !== 25 &&
+      product.product.tax !== 5
+    )
+      taxRate = product.product.tax;
+    if (product.product.tax === taxRate)
+      total +=
+        getPriceWithoutTax(product.product.price, taxRate) * product.amount;
+    else totalPrice -= product.product.price * product.amount;
   });
 
-  return total;
+  if (total !== 0) return parseInt((totalPrice - total).toFixed(2), 10);
+
+  return 0;
 };
 
-export const getTotalWithExciseDuty = products => {
-  let total = 0;
+export const getBillProductsFromProducts = products => {
+  let billProducts = [];
+
   products.forEach(product => {
-    total += getPriceWithoutTax(product.price, 25) * (1 + 5 / 100);
+    let billProduct = {
+      productId: product.product.id,
+      product: product.product,
+      priceAtPurchase: product.product.price,
+      taxAtPurchase: product.product.tax
+    };
+
+    billProducts.push(billProduct);
   });
 
-  return total;
+  return billProducts;
 };
 
 const getPriceWithoutTax = (priceWithTax, taxRate) => {

@@ -6,6 +6,7 @@ using System.Text;
 using CashRegister.Data.Entities;
 using CashRegister.Data.Entities.Models;
 using CashRegister.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CashRegister.Domain.Implementations
 {
@@ -77,6 +78,7 @@ namespace CashRegister.Domain.Implementations
                 return false;
 
             productToEdit.Amount = newAmount;
+            _context.Entry<Product>(productToEdit).State = EntityState.Detached;
             _context.SaveChanges();
 
             return true;
