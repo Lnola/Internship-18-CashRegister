@@ -19,6 +19,8 @@ namespace CashRegister.Data.Entities
         public DbSet<Product> Products { get; set; }
         public DbSet<Register> Registers { get; set; }
 
+        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CashierRegister>()
@@ -41,9 +43,7 @@ namespace CashRegister.Data.Entities
             modelBuilder.Entity<BillProduct>()
                 .HasOne(bp => bp.Product)
                 .WithMany(p => p.BillProducts)
-                .HasForeignKey(bp => bp.BillId);
-
-
+                .HasForeignKey(bp => bp.ProductId);
         }
     }
 }

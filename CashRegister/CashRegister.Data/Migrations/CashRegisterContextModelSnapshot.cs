@@ -62,6 +62,8 @@ namespace CashRegister.Data.Migrations
 
                     b.HasKey("BillId", "ProductId");
 
+                    b.HasIndex("ProductId");
+
                     b.ToTable("BillProducts");
                 });
 
@@ -139,7 +141,7 @@ namespace CashRegister.Data.Migrations
 
                     b.HasOne("CashRegister.Data.Entities.Models.Product", "Product")
                         .WithMany("BillProducts")
-                        .HasForeignKey("BillId")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

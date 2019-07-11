@@ -32,6 +32,7 @@ namespace CashRegister.Domain.Implementations
         {
             billToAdd.Guid = Guid.NewGuid();
             billToAdd.IssueDate = DateTime.Now;
+            billToAdd.BillProducts = null;
             var doesGuidExist = _context.Bills.Any(bill => bill.Guid.Equals(billToAdd.Guid));
 
             if (doesGuidExist)
@@ -52,17 +53,24 @@ namespace CashRegister.Domain.Implementations
                     return false;
             }
 
+
             _context.Bills.Add(billToAdd);
-            _context.Entry<Bill>(billToAdd).State = EntityState.Detached;
             _context.SaveChanges();
+
 
             foreach (var productToAdd in productsToAddToBill)
             {
+                
+                productToAdd.Bill = billToAdd;
+                productToAdd.Product = _context.Products.Find(productToAdd.ProductId);
+                productToAdd.BillId = billToAdd.Id;
+                productToAdd.ProductId = productToAdd.ProductId;
                 var wasAddSuccessful = billProductRepository.AddBillProduct(productToAdd);
                 if (!wasAddSuccessful)
                     return false;
             }
 
+            
             return true;
         }
     }

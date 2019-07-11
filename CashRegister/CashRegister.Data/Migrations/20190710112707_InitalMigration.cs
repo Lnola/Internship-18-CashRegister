@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CashRegister.Data.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitalMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -19,6 +19,23 @@ namespace CashRegister.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cashiers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Barcode = table.Column<string>(nullable: true),
+                    Price = table.Column<double>(nullable: false),
+                    Tax = table.Column<int>(nullable: false),
+                    Amount = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,8 +80,12 @@ namespace CashRegister.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Guid = table.Column<Guid>(nullable: false),
                     IssueDate = table.Column<DateTime>(nullable: false),
                     TotalPriceWithoutTax = table.Column<double>(nullable: false),
+                    ExciseDutyAmount = table.Column<double>(nullable: false),
+                    ValueAddedTaxAmount = table.Column<double>(nullable: false),
+                    CustomTaxAmount = table.Column<double>(nullable: false),
                     TotalPriceWithTax = table.Column<double>(nullable: false),
                     CashierRegisterCashierId = table.Column<int>(nullable: true),
                     CashierRegisterRegisterId = table.Column<int>(nullable: true)
@@ -81,29 +102,35 @@ namespace CashRegister.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "BillProducts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Barcode = table.Column<string>(nullable: true),
-                    Price = table.Column<double>(nullable: false),
-                    ValueAddedTax = table.Column<int>(nullable: false),
-                    ExciseDuty = table.Column<int>(nullable: false),
-                    Amount = table.Column<int>(nullable: false),
-                    BillId = table.Column<int>(nullable: true)
+                    BillId = table.Column<int>(nullable: false),
+                    ProductId = table.Column<int>(nullable: false),
+                    PriceAtPurchase = table.Column<double>(nullable: false),
+                    TaxAtPurchase = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.PrimaryKey("PK_BillProducts", x => new { x.BillId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_Products_Bills_BillId",
+                        name: "FK_BillProducts_Bills_BillId",
                         column: x => x.BillId,
                         principalTable: "Bills",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BillProducts_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BillProducts_ProductId",
+                table: "BillProducts",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bills_CashierRegisterCashierId_CashierRegisterRegisterId",
@@ -114,20 +141,18 @@ namespace CashRegister.Data.Migrations
                 name: "IX_CashierRegisters_RegisterId",
                 table: "CashierRegisters",
                 column: "RegisterId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_BillId",
-                table: "Products",
-                column: "BillId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "BillProducts");
 
             migrationBuilder.DropTable(
                 name: "Bills");
+
+            migrationBuilder.DropTable(
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "CashierRegisters");

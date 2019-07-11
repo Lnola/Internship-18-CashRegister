@@ -36,6 +36,7 @@ namespace CashRegister.Web.Controllers
         public IActionResult AddBill(Bill billToAdd)
         {
             var wasAddSuccessful = _billRepository.AddBill(billToAdd, billToAdd.BillProducts.ToList());
+            //var wasAddSuccessful = _billRepository.AddBill(billToAdd, null);
             if (wasAddSuccessful)
                 return Ok();
 

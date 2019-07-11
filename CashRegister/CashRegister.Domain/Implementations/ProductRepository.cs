@@ -78,8 +78,8 @@ namespace CashRegister.Domain.Implementations
                 return false;
 
             productToEdit.Amount = newAmount;
-            _context.Entry<Product>(productToEdit).State = EntityState.Detached;
-            _context.SaveChanges();
+            //_context.Entry<Product>(productToEdit).State = EntityState.Detached;
+            //_context.SaveChanges();
 
             return true;
         }

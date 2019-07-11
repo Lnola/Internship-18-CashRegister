@@ -170,7 +170,7 @@ export class CashRegister extends Component {
 
     addBill(billToAdd)
       .then(() => alert("Success"))
-      .catch(() => "Unsuccessful");
+      .catch(() => alert("Unsuccessful"));
   };
 
   render() {

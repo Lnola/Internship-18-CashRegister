@@ -25,13 +25,25 @@ namespace CashRegister.Domain.Implementations
 
         public bool AddBillProduct(BillProduct billProductToAdd)
         {
-            var doesBillExist = _context.Bills.Any(bill => bill.Id.Equals(billProductToAdd.BillId));
+            var doesBillExist = _context.Bills.Any(bill => bill.Id.Equals(billProductToAdd.Bill.Id));
             var doesProductExist = _context.Products.Any(product => product.Id.Equals(billProductToAdd.ProductId));
 
             if (!doesBillExist || !doesProductExist)
                 return false;
 
-            _context.BillProducts.Add(billProductToAdd);
+
+            var newBillProduct = new BillProduct
+            {
+                Bill = billProductToAdd.Bill,
+                Product = billProductToAdd.Product,
+                //newBillProduct.BillId = billProductToAdd.BillId;
+                //newBillProduct.ProductId = billProductToAdd.ProductId;
+                PriceAtPurchase = billProductToAdd.PriceAtPurchase,
+                TaxAtPurchase = billProductToAdd.TaxAtPurchase
+            };
+
+
+            _context.BillProducts.Add(newBillProduct);
             _context.SaveChanges();
 
             return true;
