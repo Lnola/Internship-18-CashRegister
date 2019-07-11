@@ -18,7 +18,7 @@ export class BillHistory extends Component {
         register: 1,
         cashier: 1,
         dateOfIssue: "12 / 2 / 2019",
-        products: [{ type: "apple", amount: 1, price: 200 }]
+        billProducts: [{ product: { name: "", amount: "", price: "" } }]
       },
       hasMore: true,
       startingPosition: 10

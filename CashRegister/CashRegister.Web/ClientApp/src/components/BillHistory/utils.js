@@ -41,6 +41,7 @@ export const getBillProductsFromProducts = products => {
     let billProduct = {
       productId: product.product.id,
       product: product.product,
+      amountBought: product.amount,
       priceAtPurchase: product.product.price,
       taxAtPurchase: product.product.tax
     };

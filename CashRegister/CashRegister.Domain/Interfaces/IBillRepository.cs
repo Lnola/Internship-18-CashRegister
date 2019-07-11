@@ -9,6 +9,7 @@ namespace CashRegister.Domain.Interfaces
     {
         List<Bill> GetTenBills(int startPosition);
         List<Bill> GetSearchedBills(string dateInput);
+        Bill GetLastCreatedBill();
         bool AddBill(Bill billToAdd, List<BillProduct> productsToAdd);
     }
 }

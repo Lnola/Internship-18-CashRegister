@@ -1,13 +1,15 @@
 import React, { Component } from "react";
+import Printd from "printd";
 import { SortedSearch } from "../SortedSearch";
 import { BoughtItems } from "./BoughtItems";
-import { editAmount, addProductToBill, addBill } from "../utils";
+import { editAmount, addProductToBill, addBill, getLatestBill } from "../utils";
 import "./CashRegister.css";
 import {
   getTotalWithoutTax,
   getTotalTaxForTaxType,
   getBillProductsFromProducts
 } from "../BillHistory/utils";
+import { Bill } from "../BillHistory/Bill";
 
 export class CashRegister extends Component {
   static displayName = CashRegister.name;
@@ -22,7 +24,9 @@ export class CashRegister extends Component {
       isInputDisabled: false,
       boughtProducts: [],
       productToSave: { product: {}, amount: "" },
-      totalPrice: 0
+      totalPrice: 0,
+
+      billVisibility: false
     };
   }
 
@@ -133,18 +137,7 @@ export class CashRegister extends Component {
 
   onPrintBill = () => {
     const { boughtProducts, totalPrice } = this.state;
-    // boughtProducts.forEach(product => {
-    //   editAmount(product.product.id, product.product.amount)
-    //     .then(() => {
-    //       this.setState({
-    //         boughtProducts: [],
-    //         totalPrice: 0
-    //       });
-    //       alert("Printing the bill");
-    //     })
-    //     .catch(() => alert("Unsuccessful"));
 
-    // });
     const billToAdd = {
       totalPriceWithoutTax: getTotalWithoutTax(boughtProducts),
       exciseDutyAmount: getTotalTaxForTaxType(
@@ -166,10 +159,27 @@ export class CashRegister extends Component {
       billProducts: getBillProductsFromProducts(boughtProducts)
     };
 
-    console.log(billToAdd);
-
     addBill(billToAdd)
-      .then(() => alert("Success"))
+      .then(() => {
+        this.setState({
+          boughtProducts: [],
+          totalPrice: 0
+        });
+        alert("Printing the bill");
+
+        getLatestBill().then(response => {
+          setTimeout(() => {
+            this.setState({ billVisibility: false, isInputDisabled: false });
+          }, 5000);
+          this.setState({
+            bill: response.data,
+            billVisibility: true,
+            isInputDisabled: true
+          });
+          const d = new Printd();
+          d.print(document.getElementById("printMe"));
+        });
+      })
       .catch(() => alert("Unsuccessful"));
   };
 
@@ -182,7 +192,9 @@ export class CashRegister extends Component {
       isInputDisabled,
       productToSave,
       boughtProducts,
-      totalPrice
+      totalPrice,
+      bill,
+      billVisibility
     } = this.state;
 
     if (!isRegisterOpened)
@@ -223,6 +235,15 @@ export class CashRegister extends Component {
             </button>
           </div>
         </div>
+
+        {billVisibility ? (
+          <div>
+            <h3>Printing bill...</h3>
+            <Bill displayedBill={bill} />
+          </div>
+        ) : (
+          ""
+        )}
 
         <BoughtItems
           handlePrintBill={this.onPrintBill}

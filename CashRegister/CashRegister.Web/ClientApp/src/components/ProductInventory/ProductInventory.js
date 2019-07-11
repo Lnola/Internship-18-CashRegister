@@ -228,7 +228,9 @@ export class ProductInventory extends Component {
               radioInput: ""
             });
           })
-          .catch(() => alert("Add unsuccessful"));
+          .catch(() =>
+            alert("Add unsuccessful! Either name or barcode allready exists")
+          );
       }
     } else alert("Fields can't be empty");
   };
@@ -258,6 +260,7 @@ export class ProductInventory extends Component {
       if (!isCustomTaxFieldEmpty && !isBarcodeTooShort) {
         const productToEdit = {
           id: this.state.productToSave.product.id,
+          name: this.state.searchbarInput,
           barcode: barcodeInput,
           tax: tax,
           price: priceInput
@@ -276,7 +279,11 @@ export class ProductInventory extends Component {
               isEditOpen: false
             });
           })
-          .catch(() => alert("Edit unsuccessful"));
+          .catch(() =>
+            alert(
+              "Edit unsuccessful! Either barcode exists or nothing was changed in the edit"
+            )
+          );
       }
     } else alert("Fields can't be empty");
   };
@@ -290,7 +297,12 @@ export class ProductInventory extends Component {
       )
         .then(() => {
           alert("New products successfuly added");
-          this.setState({ amountInput: "", isEditOpen: false });
+          this.setState({
+            amountInput: "",
+            isEditOpen: false,
+            searchbarInput: "",
+            isInputDisabled: false
+          });
         })
         .catch(() => alert("Unsuccessful"));
     } else alert("Field must contain a number");

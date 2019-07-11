@@ -17,6 +17,7 @@ export const addNewProduct = productToAdd =>
 export const editProduct = editedProduct =>
   axios.post("/api/products/edit", {
     id: editedProduct.id,
+    name: editedProduct.name,
     barcode: editedProduct.barcode,
     tax: editedProduct.tax,
     price: editedProduct.price
@@ -35,6 +36,8 @@ export const getSimilarBills = searchbarInput =>
   axios.get("/api/bills/get-similar", {
     params: { dateInput: searchbarInput }
   });
+
+export const getLatestBill = () => axios.get("/api/bills/last");
 
 export const addProductToBill = billProductToAdd =>
   axios.post("/api/billProducts/add", {

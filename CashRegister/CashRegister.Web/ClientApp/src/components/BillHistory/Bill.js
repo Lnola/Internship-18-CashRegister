@@ -15,42 +15,45 @@ export class Bill extends Component {
   render() {
     const { bill } = this.state;
 
+    console.log(bill);
+
     return (
-      <div className="bill">
+      <div id="printMe" className="bill">
         <h5>Bill - {bill.guid}</h5>
         <p>Cash Register: {bill.register}</p>
         <p>Cashier: {bill.cashier}</p>
 
-        {/* <div className="products-list">
+        <div className="products-list">
           <ul className="t-a-start">
             <li>Name:</li>
             <br />
-            {bill.products.map((product, index) => (
-              <li key={index}>{product.type}</li>
+            {bill.billProducts.map((billProduct, index) => (
+              <li key={index}>{billProduct.product.name}</li>
             ))}
           </ul>
 
           <ul>
             <li>Amount:</li>
             <br />
-            {bill.products.map((product, index) => (
-              <li key={index}>{product.amount}</li>
+            {bill.billProducts.map((billProduct, index) => (
+              <li key={index}>{billProduct.amountBought}</li>
             ))}
           </ul>
 
           <ul>
             <li>Price in HRK:</li>
             <br />
-            {bill.products.map((product, index) => (
-              <li key={index}>{product.price}</li>
+            {bill.billProducts.map((billProduct, index) => (
+              <li key={index}>{billProduct.priceAtPurchase}</li>
             ))}
           </ul>
-        </div> */}
+        </div>
 
         <p>Final: {bill.totalPriceWithTax}</p>
         <p>Price without tax: {bill.totalPriceWithoutTax}</p>
-        <p>Price for VAT: {bill.valueAddedTaxAmount}</p>
-        <p>Price for excise duty: {bill.exciseDutyAmount}</p>
+        <p>VAT: {bill.valueAddedTaxAmount}</p>
+        <p>Excise duty: {bill.exciseDutyAmount}</p>
+        <p>Custom duty: {bill.customTaxAmount}</p>
 
         <p>GUID - {bill.guid}</p>
         <p>Date of issue - {bill.issueDate}</p>

@@ -20,19 +20,27 @@ namespace CashRegister.Domain.Implementations
 
         public List<Bill> GetTenBills(int startPosition)
         {
-            return _context.Bills.OrderByDescending(bill => bill.IssueDate).Skip(startPosition).Take(10).ToList();
+            return _context.Bills.Include("CashierRegister").Include("BillProducts").Include("BillProducts.Product")
+                .OrderByDescending(bill => bill.IssueDate).Skip(startPosition).Take(10).ToList();
         }
 
         public List<Bill> GetSearchedBills(string dateInput)
         {
-            return _context.Bills.Where(bill => bill.IssueDate.ToString("O").Contains(dateInput)).ToList();
+            return _context.Bills.Include("CashierRegister").Include("BillProducts").Include("BillProducts.Product")
+                .Where(bill => bill.IssueDate.ToString("O").Contains(dateInput)).ToList();
+        }
+
+        public Bill GetLastCreatedBill()
+        {
+            return _context.Bills.Include("CashierRegister").Include("BillProducts").Include("BillProducts.Product")
+                .OrderByDescending(bill => bill.IssueDate).First();
         }
 
         public bool AddBill(Bill billToAdd, List<BillProduct> productsToAddToBill)
         {
             billToAdd.Guid = Guid.NewGuid();
             billToAdd.IssueDate = DateTime.Now;
-            billToAdd.BillProducts = null;
+            billToAdd.BillProducts = new List<BillProduct>();
             var doesGuidExist = _context.Bills.Any(bill => bill.Guid.Equals(billToAdd.Guid));
 
             if (doesGuidExist)
@@ -46,31 +54,26 @@ namespace CashRegister.Domain.Implementations
             var billProductRepository = new BillProductRepository(_context);
             var productRepository = new ProductRepository(_context);
 
+
+            _context.Bills.Add(billToAdd);
+
+
             foreach (var productToAdd in productsToAddToBill)
             {
-                var wasEditAmountSuccessful = productRepository.EditProductAmount(productToAdd.ProductId, productToAdd.Product.Amount);
+                var newAmount = productToAdd.Product.Amount;
+
+                productToAdd.Bill = billToAdd;
+                productToAdd.Product = _context.Products.Find(productToAdd.ProductId);
+                var wasAddSuccessful = billProductRepository.AddBillProduct(productToAdd);
+                if (!wasAddSuccessful)
+                    return false;
+
+                var wasEditAmountSuccessful = productRepository.EditProductAmount(productToAdd.ProductId, newAmount);
                 if (!wasEditAmountSuccessful)
                     return false;
             }
 
 
-            _context.Bills.Add(billToAdd);
-            _context.SaveChanges();
-
-
-            foreach (var productToAdd in productsToAddToBill)
-            {
-                
-                productToAdd.Bill = billToAdd;
-                productToAdd.Product = _context.Products.Find(productToAdd.ProductId);
-                productToAdd.BillId = billToAdd.Id;
-                productToAdd.ProductId = productToAdd.ProductId;
-                var wasAddSuccessful = billProductRepository.AddBillProduct(productToAdd);
-                if (!wasAddSuccessful)
-                    return false;
-            }
-
-            
             return true;
         }
     }

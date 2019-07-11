@@ -26,7 +26,7 @@ namespace CashRegister.Domain.Implementations
 
         public List<Product> GetProductsMatchingInput(string input)
         {
-            return _context.Products.Where(product => product.Name.Contains(input)).ToList();
+            return _context.Products.Where(product => product.Name.Contains(input) || product.Barcode.Contains(input)).ToList();
         }
 
         public bool AddProduct(Product productToAdd)
@@ -34,7 +34,7 @@ namespace CashRegister.Domain.Implementations
             var doesProductExist = _context.Products.Any(product =>
                 string.Equals(product.Name, productToAdd.Name, StringComparison.CurrentCultureIgnoreCase));
 
-            if (doesProductExist || DoesBarcodeExist(productToAdd.Barcode))
+            if (doesProductExist || DoesBarcodeExist(productToAdd.Barcode, productToAdd.Name))
                 return false;
 
             _context.Products.Add(productToAdd);
@@ -44,12 +44,10 @@ namespace CashRegister.Domain.Implementations
 
         public bool EditProduct(Product editedProduct)
         {
-            if (DoesBarcodeExist(editedProduct.Barcode))
+            if (DoesBarcodeExist(editedProduct.Barcode, editedProduct.Name))
                 return false;
 
             var productToEdit = _context.Products.Find(editedProduct.Id);
-
-            
 
             if (productToEdit == null)
                 return false;
@@ -77,9 +75,11 @@ namespace CashRegister.Domain.Implementations
             if (productToEdit == null)
                 return false;
 
+            if (newAmount < 0)
+                return false;
+
             productToEdit.Amount = newAmount;
-            //_context.Entry<Product>(productToEdit).State = EntityState.Detached;
-            //_context.SaveChanges();
+            _context.SaveChanges();
 
             return true;
         }
@@ -97,10 +97,11 @@ namespace CashRegister.Domain.Implementations
             return true;
         }
 
-        private bool DoesBarcodeExist(string barcode)
+        private bool DoesBarcodeExist(string barcode, string name)
         {
             var doesBarcodeExist = _context.Products.Any(product =>
-                string.Equals(product.Barcode, barcode, StringComparison.CurrentCulture));
+                string.Equals(product.Barcode, barcode, StringComparison.CurrentCulture) &&
+                !string.Equals(product.Name, name, StringComparison.CurrentCultureIgnoreCase));
 
             return doesBarcodeExist;
         }

@@ -32,11 +32,16 @@ namespace CashRegister.Web.Controllers
             return Ok(_billRepository.GetSearchedBills(dateInput));
         }
 
+        [HttpGet("last")]
+        public IActionResult GetLastBill()
+        {
+            return Ok(_billRepository.GetLastCreatedBill());
+        }
+
         [HttpPost("add")]
         public IActionResult AddBill(Bill billToAdd)
         {
             var wasAddSuccessful = _billRepository.AddBill(billToAdd, billToAdd.BillProducts.ToList());
-            //var wasAddSuccessful = _billRepository.AddBill(billToAdd, null);
             if (wasAddSuccessful)
                 return Ok();
 
