@@ -56,6 +56,11 @@ export class CashRegister extends Component {
   };
 
   componentDidMount() {
+    if (
+      localStorage.getItem("cashierId") === null ||
+      localStorage.getItem("registerId") === null
+    )
+      this.props.history.push("/");
     document.addEventListener("keydown", this.handleKeyDown);
   }
 

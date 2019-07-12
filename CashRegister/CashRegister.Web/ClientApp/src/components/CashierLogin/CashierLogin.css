@@ -1,0 +1,9 @@
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 218px;
+}
+
+.login-wrapper input {
+  margin-bottom: 10px;
+}

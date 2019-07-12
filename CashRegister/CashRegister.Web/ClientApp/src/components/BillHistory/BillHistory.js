@@ -26,6 +26,12 @@ export class BillHistory extends Component {
   }
 
   componentDidMount() {
+    if (
+      localStorage.getItem("cashierId") === null ||
+      localStorage.getItem("registerId") === null
+    )
+      this.props.history.push("/");
+
     getTenBills(0).then(response => {
       this.setState({
         billsMatchingSearch: response.data

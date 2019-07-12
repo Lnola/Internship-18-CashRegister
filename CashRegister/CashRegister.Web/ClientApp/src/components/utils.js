@@ -56,3 +56,9 @@ export const addBill = billToAdd =>
     totalPriceWithTax: billToAdd.totalPriceWithTax,
     billProducts: billToAdd.billProducts
   });
+
+export const addCashierRegister = (registerId, cashierId) =>
+  axios.post("/api/cashier-register/add", {
+    registerId,
+    cashierId
+  });

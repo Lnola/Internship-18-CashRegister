@@ -20,7 +20,7 @@ export class NavMenu extends Component {
     this.toggleNavbar = this.toggleNavbar.bind(this);
     this.state = {
       collapsed: true,
-      navText: "Cash Register"
+      navText: "Intro"
     };
   }
 
@@ -31,7 +31,14 @@ export class NavMenu extends Component {
   }
 
   handleNavTextChange = newText => {
-    this.setState({ navText: newText });
+    if (localStorage.getItem("cashierId") !== null)
+      this.setState({ navText: newText });
+  };
+
+  handleLogOut = () => {
+    this.handleNavTextChange("Login");
+    localStorage.removeItem("cashierId");
+    localStorage.removeItem("registerId");
   };
 
   render() {
@@ -61,7 +68,7 @@ export class NavMenu extends Component {
                     onClick={() => this.handleNavTextChange("Cash Register")}
                     tag={Link}
                     className="text-dark"
-                    to="/"
+                    to="/register"
                   >
                     Cash register
                   </NavLink>
@@ -86,6 +93,17 @@ export class NavMenu extends Component {
                     to="/history"
                   >
                     History
+                  </NavLink>
+                </NavItem>
+
+                <NavItem>
+                  <NavLink
+                    onClick={this.handleLogOut}
+                    tag={Link}
+                    className="text-dark"
+                    to="/"
+                  >
+                    Log out
                   </NavLink>
                 </NavItem>
               </ul>
