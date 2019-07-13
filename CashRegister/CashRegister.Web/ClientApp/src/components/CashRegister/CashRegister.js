@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Printd from "printd";
 import { SortedSearch } from "../SortedSearch";
 import { BoughtItems } from "./BoughtItems";
-import { editAmount, addProductToBill, addBill, getLatestBill } from "../utils";
+import { addBill, getLatestBill } from "../utils";
 import "./CashRegister.css";
 import {
   getTotalWithoutTax,
@@ -161,7 +161,11 @@ export class CashRegister extends Component {
         totalPrice
       ),
       totalPriceWithTax: totalPrice,
-      billProducts: getBillProductsFromProducts(boughtProducts)
+      billProducts: getBillProductsFromProducts(boughtProducts),
+      cashierRegister: {
+        cashierId: parseInt(localStorage.getItem("cashierId"), 10),
+        registerId: parseInt(localStorage.getItem("registerId"), 10)
+      }
     };
 
     addBill(billToAdd)

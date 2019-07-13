@@ -20,19 +20,22 @@ namespace CashRegister.Domain.Implementations
 
         public List<Bill> GetTenBills(int startPosition)
         {
-            return _context.Bills.Include("CashierRegister").Include("BillProducts").Include("BillProducts.Product")
+            return _context.Bills.Include("CashierRegister").Include("CashierRegister.Cashier").Include("BillProducts")
+                .Include("BillProducts.Product")
                 .OrderByDescending(bill => bill.IssueDate).Skip(startPosition).Take(10).ToList();
         }
 
         public List<Bill> GetSearchedBills(string dateInput)
         {
-            return _context.Bills.Include("CashierRegister").Include("BillProducts").Include("BillProducts.Product")
+            return _context.Bills.Include("CashierRegister").Include("CashierRegister.Cashier").Include("BillProducts")
+                .Include("BillProducts.Product")
                 .Where(bill => bill.IssueDate.ToString("O").Contains(dateInput)).ToList();
         }
 
         public Bill GetLastCreatedBill()
         {
-            return _context.Bills.Include("CashierRegister").Include("BillProducts").Include("BillProducts.Product")
+            return _context.Bills.Include("CashierRegister").Include("CashierRegister.Cashier").Include("BillProducts")
+                .Include("BillProducts.Product")
                 .OrderByDescending(bill => bill.IssueDate).First();
         }
 
@@ -54,6 +57,11 @@ namespace CashRegister.Domain.Implementations
             var billProductRepository = new BillProductRepository(_context);
             var productRepository = new ProductRepository(_context);
 
+            var cashierRegisterToAdd = _context.CashierRegisters.Where(cashierRegister =>
+                cashierRegister.RegisterId.Equals(billToAdd.CashierRegister.RegisterId) &&
+                cashierRegister.CashierId.Equals(billToAdd.CashierRegister.CashierId)).ToList();
+
+            billToAdd.CashierRegister = cashierRegisterToAdd[0];
 
             _context.Bills.Add(billToAdd);
 

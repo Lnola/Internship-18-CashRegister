@@ -66,7 +66,7 @@ export class CashierLogin extends Component {
           onChange={e => this.handleInput(e, "cashier")}
           value={cashierId}
           type="number"
-          placeholder="Cashier name..."
+          placeholder="Cashier id..."
         />
         <button onClick={this.handleSubmit}>Submit</button>
       </div>

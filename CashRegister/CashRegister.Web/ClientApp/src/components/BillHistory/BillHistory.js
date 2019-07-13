@@ -18,7 +18,8 @@ export class BillHistory extends Component {
         register: 1,
         cashier: 1,
         dateOfIssue: "12 / 2 / 2019",
-        billProducts: [{ product: { name: "", amount: "", price: "" } }]
+        billProducts: [{ product: { name: "", amount: "", price: "" } }],
+        cashierRegister: { cashier: { name: "" }, cashierId: 1, registerId: 1 }
       },
       hasMore: true,
       startingPosition: 10

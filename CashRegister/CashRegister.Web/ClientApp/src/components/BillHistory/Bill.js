@@ -9,19 +9,30 @@ export class Bill extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ bill: nextProps.displayedBill });
+    const { displayedBill } = nextProps;
+
+    if (displayedBill.cashierRegister === null) {
+      displayedBill.cashierRegister = {
+        registerId: 1,
+        cashierId: 1,
+        cashier: { name: "Mate Matic" }
+      };
+    }
+
+    this.setState({ bill: displayedBill });
   }
 
   render() {
     const { bill } = this.state;
 
-    console.log(bill);
-
     return (
       <div id="printMe" className="bill">
         <h5>Bill - {bill.guid}</h5>
-        <p>Cash Register: {bill.register}</p>
-        <p>Cashier: {bill.cashier}</p>
+        <p>Cash Register: {bill.cashierRegister.registerId}</p>
+        <p>
+          Cashier: {bill.cashierRegister.cashierId} -{" "}
+          {bill.cashierRegister.cashier.name}
+        </p>
 
         <div className="products-list">
           <ul className="t-a-start">

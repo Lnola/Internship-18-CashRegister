@@ -54,7 +54,8 @@ export const addBill = billToAdd =>
     valueAddedTaxAmount: billToAdd.valueAddedTaxAmount,
     customTaxAmount: billToAdd.customTaxAmount,
     totalPriceWithTax: billToAdd.totalPriceWithTax,
-    billProducts: billToAdd.billProducts
+    billProducts: billToAdd.billProducts,
+    cashierRegister: billToAdd.cashierRegister
   });
 
 export const addCashierRegister = (registerId, cashierId) =>
